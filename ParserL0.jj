@@ -1,6 +1,6 @@
 PARSER_BEGIN(Parser)
 
-import java.util.*;
+import AST.*;import environment.Bind;import java.util.*;
 
 public class Parser {
 }
@@ -216,10 +216,10 @@ ASTNode Fact() :
 }
 {
    (
-      n=<Num> { t = new ASTInt(Integer.parseInt(n.image)); } 
-    | n=<TRUE> { /* missing AST for true */; t = null; }
-    | n=<FALSE> {  /* missing AST for false */; t = null;}
-    | n=<Id> { t = new ASTId(n.image); } 
+      n=<Num> { t = new ASTInt(Integer.parseInt(n.image)); }
+    | n=<TRUE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
+    | n=<FALSE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
+    | n=<Id> { t = new ASTId(n.image); }
     | <BOX> t=Fact() { /* missing AST for box */; t = null; }
     | <STAR> t=Fact() { /* missing AST for deref */; t = null; }
     | <MINUS> t=Fact() { t = new ASTNeg(t); }

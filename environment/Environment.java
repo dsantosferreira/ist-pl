@@ -1,19 +1,24 @@
+package environment;
+
+import errors.InterpreterError;
+
 import java.util.*;
 
 public class Environment <E>{
     Environment<E> anc;
     Map<String, E> bindings;
 
-    Environment(){
+    public Environment(){
         anc = null;
         bindings = new HashMap<String,E>();
     }
     
     Environment(Environment<E> ancestor){
-	// code missing
+	    anc = ancestor;
+        bindings = new HashMap<>();
     }
 
-    Environment<E> beginScope(){
+    public Environment<E> beginScope(){
         return new Environment<E>(this);
     }
     
@@ -22,13 +27,13 @@ public class Environment <E>{
     }
 
     void assoc(String id, E bind) throws InterpreterError {
-	// code missing
+	    // code missing
     }
 
 
-    E find(String id) throws InterpreterError {
-	// code missing
-	return null;
+    public E find(String id) throws InterpreterError {
+        // code missing
+        return null;
     }
 
 }

@@ -1,11 +1,13 @@
-class VInt implements IValue {
+package values;
+
+public class VInt implements IValue {
     int v;
 
-    VInt(int v0) {
+    public VInt(int v0) {
         v = v0;
     }
 
-    int getval() {
+    public int getVal() {
         return v;
     }
 

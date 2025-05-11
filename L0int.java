@@ -1,3 +1,7 @@
+import AST.ASTNode;
+import environment.Environment;
+import values.IValue;
+
 public class L0int {
 
     public static void main(String args[]) {

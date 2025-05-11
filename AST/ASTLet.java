@@ -1,3 +1,10 @@
+package AST;
+
+import environment.Bind;
+import environment.Environment;
+import errors.InterpreterError;
+import values.IValue;
+
 import java.util.List;
 
 public class ASTLet implements ASTNode {
@@ -5,8 +12,9 @@ public class ASTLet implements ASTNode {
     ASTNode body;
 
     public IValue eval(Environment<IValue> e) throws InterpreterError {
-	Environment<IValue> en = e.beginScope();
-	/*missing code */
+	    Environment<IValue> en = e.beginScope();
+	    /*missing code */
+        return null;
     }
 
     public ASTLet(List<Bind> decls, ASTNode b) {
