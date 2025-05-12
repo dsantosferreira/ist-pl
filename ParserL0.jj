@@ -103,7 +103,7 @@ ASTNode Start():
 ASTNode Let() :
 { Token n; 
   ASTNode t, e1, e2;
-  List<Bind> decls  = new ArrayList<Bind>();;
+  List<Bind> decls  = new ArrayList<Bind>();
 }
 { 
     (

@@ -5,10 +5,10 @@ import errors.InterpreterError;
 import values.IValue;
 import values.VBool;
 
-public class ASTBool {
+public class ASTBool implements ASTNode {
     boolean b;
 
-    ASTBool(boolean b) {
+    public ASTBool(boolean b) {
         this.b = b;
     }
 

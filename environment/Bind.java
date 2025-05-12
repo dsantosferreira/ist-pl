@@ -1,6 +1,7 @@
 package environment;
 
 import AST.ASTNode;
+import values.IValue;
 
 public class Bind {
     private final String id;
