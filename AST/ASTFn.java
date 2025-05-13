@@ -1,24 +1,21 @@
 package AST;
 
-import environment.Bind;
 import environment.Environment;
 import errors.InterpreterError;
 import values.IValue;
 import values.VClosure;
 
-import java.util.List;
-
 public class ASTFn implements ASTNode {
-    private final List<Bind> vars;
+    private final String var;
     private final ASTNode body;
 
-    public ASTFn(List<Bind> vars, ASTNode body) {
-        this.vars = vars;
+    public ASTFn(String var, ASTNode body) {
+        this.var = var;
         this.body = body;
     }
 
     @Override
     public IValue eval(Environment<IValue> e) throws InterpreterError {
-        return new VClosure(e, this.vars, this.body);
+        return new VClosure(e, this.var, this.body);
     }
 }

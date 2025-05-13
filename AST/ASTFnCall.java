@@ -6,27 +6,24 @@ import values.IValue;
 import values.VClosure;
 
 public class ASTFnCall implements ASTNode {
-    private final ASTNode l, r;
+    private final ASTNode func, argument;
 
-    public ASTFnCall(ASTNode l, ASTNode r) {
-        this.l = l;
-        this.r = r;
+    public ASTFnCall(ASTNode func, ASTNode argument) {
+        this.func = func;
+        this.argument = argument;
     }
 
     @Override
     public IValue eval(Environment<IValue> e) throws InterpreterError {
-        IValue lExp = l.eval(e);
-        IValue rExp = r.eval(e);
+        IValue funcExp = this.func.eval(e);
+        IValue argumentExp = this.argument.eval(e);
 
-        if (lExp instanceof VClosure lClosure) {
-            lClosure = lClosure.initVar(rExp);
-
-            if (lClosure.isInitialized())
-                return lClosure.getBody().eval(lClosure.getEnv());
-            else
-                return lClosure;
+        if (funcExp instanceof VClosure funcExpClosure) {
+            Environment<IValue> funcEnv = this.func instanceof ASTId ? funcExpClosure.getEnv().beginScope() : funcExpClosure.getEnv();
+            funcEnv.assoc(funcExpClosure.getVar(), argumentExp);
+            return funcExpClosure.getBody().eval(funcEnv);
         } else {
-            throw new InterpreterError("Function call has too many arguments!");
+            throw new InterpreterError("Was expecting a function to apply argument " + argumentExp);
         }
     }
 }
