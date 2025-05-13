@@ -4,7 +4,7 @@
 let x = 1;
   (x + 1);;
 
-(let x = 1; (x + 1)) * (let x = 2; (x + 3))
+(let x = 1; (x + 1)) * (let x = 2; (x + 3));;
 
 let x = 1;
   let y = 2;
@@ -24,25 +24,31 @@ b || ~ (z < 0)
 
 /* tests for L1 step 2 */
 
+// 4
 let x = 1;
 let f = fn y => { x + y };
 (x + f (2));;
 
+// 5
 let x=1 ;			 
 let f = fn y => { y+x } ;
 let g = fn x => { x+f(x) };
 g(2) 
 ;;
 
+// 14
 let f = fn g,z => { g (z) };
 f (fn z => { z*2 }) (7)
 ;;
 
+// 49
 (fn z => { fn t => { z*t }}) (7) (7);;
 
 
+// 49
 (fn z,t => { z*t }) (7) (7);;
 
+// 14
 let x=1 ;			 
 let f = fn y => {
            let k = x*2;
@@ -53,10 +59,11 @@ let g = fn x, u =>
 g  (f(3)) (f) 
 ;;
 
+// 199
 let comp = fn f, g => 
         { fn x =>
         { f (g (x)) }};
 let inc = fn x => { x + 1};
 let dup = fn x => { 2 * x};
 let c2 = comp (inc) (dup);
-c2 (99)
+c2 (99);;

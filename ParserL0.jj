@@ -204,6 +204,7 @@ ASTNode Exp() :
      { return t1; } 
 }
 
+// TODO: Add ASTFnCall which should get two ASTNodes t1 and t2 in the form t1 = ASTFnCall(t1, t2)
 ASTNode Term() :
 {Token op;
   ASTNode t1, t2;}
@@ -213,17 +214,18 @@ ASTNode Term() :
 		 |
 		 op=<DIV> t2 = Fact()  { t1 = new ASTDiv(t1,t2); }
 		 |
-		 op = <LPAR> t2 = Exp () <RPAR>  { t1 = t2; } // TODO: Check this
+		 op = <LPAR> t2 = Exp () <RPAR>  { t1 = new ASTFnCall(t1, t2); } // TODO: Check this. This might be a function call and not simply parenthesis!
 		)*
      { return t1; } 
 }
 
 
+// TODO: ASTFn -> environment, name, bindings?
 ASTNode Fact() :
 { Token n; 
   ASTNode t, e1, e2;
-  List<Bind> decls;
-  ASTNode  body, alt;
+  List<Bind> decls = new ArrayList<>();
+  ASTNode body, alt;
 }
 {
    (
@@ -237,9 +239,9 @@ ASTNode Fact() :
     | <NOT> t=Fact() { t = new ASTNot(t); }
     | <IF> t=BA() <LBRA> e1=Let() <RBRA> <ELSE> <LBRA> e2=Let() <RBRA> {/* TBC */ t = null; }
     | <WHILE> t=BA() <LBRA> body=Let() <RBRA> { /* TBC */ t = null; }
-    | <FN> n=<Id> { t = null; }
-      	   	  (<COMMA> n = <Id>  {/* TBC */ })*
-		  <ARROW> <LBRA> e2 = Let() <RBRA> { /* TBC */ }
+    | <FN> n=<Id> { decls.add(new Bind(n.image, null)); }
+      	   	  (<COMMA> n = <Id>  { decls.add(new Bind(n.image, null)); })*
+		  <ARROW> <LBRA> e2 = Let() <RBRA> { t = new ASTFn(decls, e2); }
     | <PRINT> t=Fact() { /* missing AST for print */; t = null;  }
     | <PRINTLN> t=Fact() {/* missing AST for println */; t = null;  }
     | <LPAR> t=Let() <RPAR> 
