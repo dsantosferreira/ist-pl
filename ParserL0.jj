@@ -124,7 +124,7 @@ ASTNode Seq() :
 {
      t1 = SeqExp() ( ( op=<SEMIC> ) t2 = SeqExp() 
  		 {
-		 /* missing AST build */
+            t1 = new ASTSeq(t1, t2);
      } 
 		)*
      { return t1; }  

@@ -11,6 +11,15 @@ public class ASTLet implements ASTNode {
     List<Bind> decls;
     ASTNode body;
 
+
+    /* TODO: Verificar se isto deveria ser possível
+        let f = fn x => {
+            let x = 0;
+            x
+        };
+        f(1);;
+        returns 0
+    */
     public IValue eval(Environment<IValue> e) throws InterpreterError {
 	    Environment<IValue> en = e.beginScope();
 
@@ -23,6 +32,6 @@ public class ASTLet implements ASTNode {
 
     public ASTLet(List<Bind> decls, ASTNode b) {
         this.decls = decls;
-        body = b;
+        this.body = b;
     }
 }

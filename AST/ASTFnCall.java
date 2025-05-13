@@ -19,7 +19,7 @@ public class ASTFnCall implements ASTNode {
         IValue argumentExp = this.argument.eval(e);
 
         if (funcExp instanceof VClosure funcExpClosure) {
-            Environment<IValue> funcEnv = this.func instanceof ASTId ? funcExpClosure.getEnv().beginScope() : funcExpClosure.getEnv();
+            Environment<IValue> funcEnv = funcExpClosure.getEnv().beginScope();
             funcEnv.assoc(funcExpClosure.getVar(), argumentExp);
             return funcExpClosure.getBody().eval(funcEnv);
         } else {
