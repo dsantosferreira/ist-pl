@@ -51,3 +51,6 @@ let a = 1; let b = 2; if a > b {0} else {1};;
 
 // 2
 let f = fn x, y => {if (x == 1) {f(2)(2)} else {0}; x + y}; f(1)(1);;
+
+// 1
+let a = false; while a {0}; a;;

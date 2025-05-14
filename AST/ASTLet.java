@@ -12,7 +12,7 @@ public class ASTLet implements ASTNode {
     ASTNode body;
 
 
-    /* TODO: Verificar se isto deveria ser possível
+    /* TODO: Verificar se isto deveria ser possível (mesmo raciocínio em if/while)
         let f = fn x => {
             let x = 0;
             x
