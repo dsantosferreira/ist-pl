@@ -1,5 +1,12 @@
 PARSER_BEGIN(Parser)
 
+/*
+    TODO:
+        - EE::EE
+        - match EE { nil -> EE | id::id -> EE }
+        - cons(V, L)
+*/
+
 import AST.*;import environment.Bind;import java.util.*;
 
 public class Parser {
@@ -24,6 +31,8 @@ TOKEN :
   |
   < FALSE: "false" >
   |
+  < NIL: "nil" >
+  |
   < PLUS : "+" >
   |
   < MINUS : "-">
@@ -42,7 +51,7 @@ TOKEN :
   |
   < EQUAL : "=" >
   |
-  < COLON : ":" >
+  < LISTSEP : "::" >
   |
   < SEMIC : ";" >
   |
@@ -109,7 +118,7 @@ ASTNode Let() :
     (
     t = Seq()
     |
-    ((<LET>  n=<Id>  <EQUAL> e1 = BA() <SEMIC>
+    ((<LET>  n=<Id>  <EQUAL> e1 = List() <SEMIC>
       { decls.add(new Bind(n.image,e1)); }
      )+
         e2 = Seq() { t = new ASTLet(decls, e2); })
@@ -136,12 +145,21 @@ ASTNode SeqExp() :
     ASTNode t1, t2;
 }
 {
-     t1 = BA() ( ( op=<ASSIGN> ) t2 = SeqExp()
+     t1 = List() ( ( op=<ASSIGN> ) t2 = SeqExp()
  		 {
 		 t1 = new ASTAssign(t1, t2);
      } 
 		)?
      { return t1; }  
+}
+
+ASTNode List() :
+{
+    ASTNode t1, t2;
+}
+{
+    t1 = BA() ( <LISTSEP> t2 = List() {t1 = new ASTList(t1, t2); } )?
+    {return t1;}
 }
 
 ASTNode BA() :
@@ -232,6 +250,7 @@ ASTNode Fact() :
       n=<Num> { t = new ASTInt(Integer.parseInt(n.image)); }
     | n=<TRUE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<FALSE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
+    | n=<NIL> { t = new ASTNil(); }
     | n=<Id> { t = new ASTId(n.image); }
     | <BOX> t=Fact() { t = new ASTBox(t); }
     | <STAR> t=Fact() { t = new ASTDeref(t); }
