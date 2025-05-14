@@ -246,8 +246,8 @@ ASTNode Fact() :
               t = new ASTFn(vars.get(i), t);
           }
       }
-    | <PRINT> t=Fact() { /* missing AST for print */; t = null;  }
-    | <PRINTLN> t=Fact() {/* missing AST for println */; t = null;  }
+    | <PRINT> t=Fact() { t = new ASTPrint(t); }
+    | <PRINTLN> t=Fact() { t = new ASTPrintln(t); }
     | <LPAR> t=Let() <RPAR> 
     )
    { return t; }
