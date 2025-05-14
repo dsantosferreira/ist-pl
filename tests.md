@@ -78,3 +78,6 @@ let a = box(0); let f = fn b => {let c = box(b); a := c}; f(5); **a;;
 
 // 10
 let a = box(0); let f = fn b => {let c = box(b); a := c}; f(5); *a := 10; **a;;
+
+// 6
+let f = fn a, b, c => {a + b + c}; let g = f(1); let h = g(2); h(3);;
