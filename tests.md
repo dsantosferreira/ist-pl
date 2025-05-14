@@ -55,8 +55,26 @@ let f = fn x, y => {if (x == 1) {f(2)(2)} else {0}; x + y}; f(1)(1);;
 // false
 let a = false; while a {0}; a;;
 
+// 5\n4\n3\n2\n1\n0
+let a = box(5); while *a ~= 0 {println(*a); a := *a - 1}; *a;;
+
 // true1
 let a = true; let b = 1; print(a); b;;
 
 // true\n1
 let a = true; let b = 1; println(a); b;;
+
+// 6
+let fact = fn n => { let c = box (n); let f = box (1); while (*c > 0) { f := *f * *c; c := *c - 1 }; *f }; fact (3);;
+
+// 3
+let c = box(0); let tick = fn inc => { let v = *c; c := *c + inc; v }; tick(1); tick(1); tick(1); tick(1);;
+
+// 5
+let a = box(0); let f = fn b => {let c = b; a := c}; f(5); *a;;
+
+// 5
+let a = box(0); let f = fn b => {let c = box(b); a := c}; f(5); **a;;
+
+// 10
+let a = box(0); let f = fn b => {let c = box(b); a := c}; f(5); *a := 10; **a;;

@@ -131,14 +131,16 @@ ASTNode Seq() :
 }
 
 ASTNode SeqExp() :
-{Token op;
-  ASTNode t1, t2;}
 {
-     t1 = BA() ( ( op=<ASSIGN> ) t2 = BA() 
+    Token op;
+    ASTNode t1, t2;
+}
+{
+     t1 = BA() ( ( op=<ASSIGN> ) t2 = SeqExp()
  		 {
-		 /* missing AST build */
+		 t1 = new ASTAssign(t1, t2);
      } 
-		)*
+		)?
      { return t1; }  
 }
 
@@ -231,8 +233,8 @@ ASTNode Fact() :
     | n=<TRUE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<FALSE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<Id> { t = new ASTId(n.image); }
-    | <BOX> t=Fact() { /* missing AST for box */; t = null; }
-    | <STAR> t=Fact() { /* missing AST for deref */; t = null; }
+    | <BOX> t=Fact() { t = new ASTBox(t); }
+    | <STAR> t=Fact() { t = new ASTDeref(t); }
     | <MINUS> t=Fact() { t = new ASTNeg(t); }
     | <NOT> t=Fact() { t = new ASTNot(t); }
     | <IF> t=BA() <LBRA> e1=Let() <RBRA> <ELSE> <LBRA> e2=Let() <RBRA> { t = new ASTIf(t, e1, e2); }
@@ -241,6 +243,7 @@ ASTNode Fact() :
       	   	  (<COMMA> n = <Id>  { vars.add(n.image); })*
 		  <ARROW> <LBRA> e2 = Let() <RBRA>
       {
+          // TODO: think about this
           t = new ASTFn(vars.getLast(), e2);
           for (int i = vars.size() - 2; i >= 0; i--) {
               t = new ASTFn(vars.get(i), t);
