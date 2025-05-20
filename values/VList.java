@@ -7,6 +7,14 @@ public class VList implements IValue {
         this.head = head; this.tail = tail;
     }
 
+    public IValue getHead() {
+        return this.head;
+    }
+
+    public IValue getTail() {
+        return this.tail;
+    }
+
     @Override
     public String toStr() {
         return head.toStr() + "::" + tail.toStr();

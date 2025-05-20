@@ -3,19 +3,19 @@ package AST;
 import environment.Environment;
 import errors.InterpreterError;
 import values.IValue;
-import values.VNull;
 
 // TODO: Implement output of other values
 public class ASTPrintln implements ASTNode {
-    ASTNode value;
+    ASTNode var;
 
-    public ASTPrintln(ASTNode value) {
-        this.value = value;
+    public ASTPrintln(ASTNode var) {
+        this.var = var;
     }
 
     @Override
     public IValue eval(Environment<IValue> e) throws InterpreterError {
-        System.out.println(this.value.eval(e).toStr());
-        return new VNull();
+        IValue varValue = this.var.eval(e);
+        System.out.println(varValue.toStr());
+        return varValue;
     }
 }

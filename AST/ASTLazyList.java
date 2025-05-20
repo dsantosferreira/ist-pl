@@ -3,21 +3,18 @@ package AST;
 import environment.Environment;
 import errors.InterpreterError;
 import values.IValue;
-import values.VList;
+import values.VLazyList;
 
-public class ASTList implements ASTNode {
+public class ASTLazyList implements ASTNode {
     ASTNode head, tail;
 
-    public ASTList(ASTNode head, ASTNode tail) {
+    public ASTLazyList(ASTNode head, ASTNode tail) {
         this.head = head;
         this.tail = tail;
     }
 
-    // TODO: Check this
     @Override
     public IValue eval(Environment<IValue> e) throws InterpreterError {
-        IValue headVal = this.head.eval(e);
-        IValue tailVal = this.tail.eval(e);
-        return new VList(headVal, tailVal);
+        return new VLazyList(e, this.head, this.tail);
     }
 }

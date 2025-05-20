@@ -3,18 +3,18 @@ package AST;
 import environment.Environment;
 import errors.InterpreterError;
 import values.IValue;
-import values.VNull;
 
 public class ASTPrint implements ASTNode {
-    ASTNode value;
+    ASTNode var;
 
-    public ASTPrint(ASTNode value) {
-        this.value = value;
+    public ASTPrint(ASTNode var) {
+        this.var = var;
     }
 
     @Override
     public IValue eval(Environment<IValue> e) throws InterpreterError {
-        System.out.print(this.value.eval(e).toStr());
-        return new VNull();
+        IValue varValue = this.var.eval(e);
+        System.out.print(varValue.toStr());
+        return varValue;
     }
 }

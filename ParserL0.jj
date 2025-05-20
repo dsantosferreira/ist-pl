@@ -1,16 +1,11 @@
 PARSER_BEGIN(Parser)
 
-/*
-    TODO:
-        - EE::EE
-        - match EE { nil -> EE | id::id -> EE }
-        - cons(V, L)
-*/
-
 import AST.*;import environment.Bind;import java.util.*;
 
 public class Parser {
 }
+
+// TODO: Change List parsing to the same level as an application (was too tired to be able to do it)
 
 PARSER_END(Parser)
 
@@ -53,6 +48,10 @@ TOKEN :
   |
   < LISTSEP : "::" >
   |
+  < LAZYLISTSEP : ":?" >
+  |
+  < COLON : ":" >
+  |
   < SEMIC : ";" >
   |
   < TERM : ";;" >
@@ -62,6 +61,8 @@ TOKEN :
   < AND : "&&" >
   |
   < OR : "||" >
+  |
+  < MATCHSEP : "|" >
   |
   < EQ : "==" >
   |  
@@ -93,7 +94,9 @@ TOKEN :
   |
   < FN : "fn" >
   |
-  <ARROW : "=>">
+  < MATCH : "match" >
+  |
+  < ARROW : "=>">
   |
   < String: "\"" ( (~["\"","\\"]) | ("\\" ( ["n","t","b","r","f","\\","\""] ) ) )* "\"" >
   |
@@ -155,10 +158,13 @@ ASTNode SeqExp() :
 
 ASTNode List() :
 {
+    Token n;
     ASTNode t1, t2;
 }
 {
-    t1 = BA() ( <LISTSEP> t2 = List() {t1 = new ASTList(t1, t2); } )?
+    t1 = BA() ( (n=<LISTSEP> | n=<LAZYLISTSEP>) t2 = List()
+                {t1 = n.kind == LISTSEP ? new ASTList(t1, t2) : new ASTLazyList(t1, t2); }
+              )?
     {return t1;}
 }
 
@@ -233,13 +239,13 @@ ASTNode Term() :
 		 |
 		 op=<DIV> t2 = Fact()  { t1 = new ASTDiv(t1,t2); }
 		 |
-		 op = <LPAR> t2 = Exp () <RPAR>  { t1 = new ASTFnCall(t1, t2); }
+		 op = <LPAR> t2 = List () <RPAR>  { t1 = new ASTFnCall(t1, t2); }
 		)*
-     { return t1; } 
+     { return t1; }
 }
 
 ASTNode Fact() :
-{ Token n; 
+{ Token m, n;
   ASTNode t, e1, e2;
   List<String> vars = new ArrayList<>();
   List<Bind> decls = new ArrayList<>();
@@ -250,7 +256,7 @@ ASTNode Fact() :
       n=<Num> { t = new ASTInt(Integer.parseInt(n.image)); }
     | n=<TRUE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<FALSE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
-    | n=<NIL> { t = new ASTNil(); }
+    | <NIL> { t = new ASTNil(); }
     | n=<Id> { t = new ASTId(n.image); }
     | <BOX> t=Fact() { t = new ASTBox(t); }
     | <STAR> t=Fact() { t = new ASTDeref(t); }
@@ -268,6 +274,8 @@ ASTNode Fact() :
               t = new ASTFn(vars.get(i), t);
           }
       }
+    | <MATCH> t = Let() <LBRA> <NIL> <ARROW> e1 = Let() <MATCHSEP> m=<Id> <LISTSEP> n=<Id> <ARROW> e2 = Let() <RBRA>
+        { t = new ASTMatch(t, e1, m.image, n.image, e2); }
     | <PRINT> t=Fact() { t = new ASTPrint(t); }
     | <PRINTLN> t=Fact() { t = new ASTPrintln(t); }
     | <LPAR> t=Let() <RPAR> 

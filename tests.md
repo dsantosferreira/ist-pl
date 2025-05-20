@@ -81,3 +81,18 @@ let a = box(0); let f = fn b => {let c = box(b); a := c}; f(5); *a := 10; **a;;
 
 // 6
 let f = fn a, b, c => {a + b + c}; let g = f(1); let h = g(2); h(3);;
+
+// 6
+let f = fn l => {match l { nil => 0 | h::t => h + f(t)} }; f(1::2::3::nil);;
+
+let fibo = fn a, b => { a:?fibo(b)(a+b) };
+let fibogen = fibo(0)(1);
+let count = box(41);
+let lv = box(fibogen);
+while *count ~= 0 {
+    match *lv {
+        nil => println(0)
+        | v::tail => println(v); lv := tail
+    };
+    count := *count - 1
+};;
