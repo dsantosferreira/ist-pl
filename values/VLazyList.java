@@ -25,6 +25,7 @@ public class VLazyList implements IValue {
         return env;
     }
 
+    // TODO: Print de lazy lists deve avaliar o corpo?
     @Override
     public String toStr() {
         return "???";

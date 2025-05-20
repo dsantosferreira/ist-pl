@@ -36,6 +36,8 @@ TOKEN :
   |
   < DIV : "/">
   |
+  < DEREF : "!">
+  |
   < LPAR : "(" >
   |
   < RPAR : ")" >
@@ -97,6 +99,8 @@ TOKEN :
   < MATCH : "match" >
   |
   < ARROW : "=>">
+  |
+  < MATCHARROW : "->">
   |
   < String: "\"" ( (~["\"","\\"]) | ("\\" ( ["n","t","b","r","f","\\","\""] ) ) )* "\"" >
   |
@@ -259,7 +263,7 @@ ASTNode Fact() :
     | <NIL> { t = new ASTNil(); }
     | n=<Id> { t = new ASTId(n.image); }
     | <BOX> t=Fact() { t = new ASTBox(t); }
-    | <STAR> t=Fact() { t = new ASTDeref(t); }
+    | <DEREF> t=Fact() { t = new ASTDeref(t); }
     | <MINUS> t=Fact() { t = new ASTNeg(t); }
     | <NOT> t=Fact() { t = new ASTNot(t); }
     | <IF> t=BA() <LBRA> e1=Let() <RBRA> <ELSE> <LBRA> e2=Let() <RBRA> { t = new ASTIf(t, e1, e2); }
@@ -274,7 +278,7 @@ ASTNode Fact() :
               t = new ASTFn(vars.get(i), t);
           }
       }
-    | <MATCH> t = Let() <LBRA> <NIL> <ARROW> e1 = Let() <MATCHSEP> m=<Id> <LISTSEP> n=<Id> <ARROW> e2 = Let() <RBRA>
+    | <MATCH> t = Let() <LBRA> <NIL> <MATCHARROW> e1 = Let() <MATCHSEP> m=<Id> <LISTSEP> n=<Id> <MATCHARROW> e2 = Let() <RBRA>
         { t = new ASTMatch(t, e1, m.image, n.image, e2); }
     | <PRINT> t=Fact() { t = new ASTPrint(t); }
     | <PRINTLN> t=Fact() { t = new ASTPrintln(t); }

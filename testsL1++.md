@@ -1,11 +1,13 @@
 // Strict Lists
 
+// 1\n2::nil\n2::nil
 let l = 1::2::nil;
 match l {
     nil -> println(nil)
 |   x::y -> println(x); println(y)
 };;
 
+// 3
 let len = fn l =>
     {   
         match l {
@@ -15,6 +17,7 @@ let len = fn l =>
 let l0 = 1::2::3::nil;
 len (l0);;
 
+// 100:99:88...::1::nil\n(prints intermédios)\n100
 let mkl = fn n =>
 {
     if (n==0) {
@@ -34,6 +37,7 @@ println l100;
 len(l100)
 ;;
 
+// 5050
 let mkl = fn n =>
 {
     if (n==0) {
@@ -55,6 +59,7 @@ suml(l100)
 
 // Lazy Lists
 
+// 
 let l = 1:?2:?nil;
 match l {
     nil -> println(nil)
@@ -67,6 +72,8 @@ match l {
 |   x::y -> println(x); println(y)
 };;
 
+
+// 11::10::(...)::3::2::0
 let add1 = fn l => {
     match l {
         nil -> 0
@@ -84,6 +91,8 @@ let mkl = fn n =>
 };
 add1 ( mkl (10) ) ;;
 
+
+// Mesma coisa que o de cima mas começa em 101
 let add1 = fn l => {
     match l {
         nil -> 0
@@ -102,6 +111,8 @@ let mkll = fn n =>
 let ll100 = mkll (100);
 add1 ( ll100 ) ;;
 
+
+// 0\n1\n2(...)19\n0\n0
 let intsfm = fn n => {
     n:? (intsfm (n+1))
 };
@@ -119,18 +130,22 @@ let pfst = fn l,n => {
 let l = intsfm (0);
 pfst (l) (20);;
 
+
+// 514229
 let fibo = fn a, b => { a :? (fibo (b) (a+b)) };
 let fibogen = fibo (0) (1);
-let count = box ( 30 ) ;
-let lv = box( fibogen );
-while (!count != 0) {
+let count = box (30);
+let lv = box(fibogen);
+while (!count ~= 0) {
      match (!lv) {
         nil -> println (0)
       | v :: tail -> println (v); lv := tail
      };
      count := !count - 1
-};;         
+};;
 
+
+// 
 let intsfm = fn n => {
     n:? (intsfm (n+1))
 };

@@ -4,7 +4,6 @@ import environment.Environment;
 import errors.InterpreterError;
 import values.IValue;
 
-// TODO: Implement output of other values
 public class ASTPrintln implements ASTNode {
     ASTNode var;
 
