@@ -27,4 +27,9 @@ public class ASTIf implements ASTNode {
             throw new InterpreterError("Condition of if statement should be a boolean value");
         }
     }
+
+    @Override
+    public String toStr() {
+        return "if " + this.test.toStr() + " { " + this.btrue.toStr() + "} else {" + this.bfalse.toStr() + " }; ";
+    }
 }

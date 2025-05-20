@@ -13,7 +13,6 @@ public class ASTWhile implements ASTNode {
         this.body = body;
     }
 
-    // TODO: Esclarecer dúvida dos slides
     @Override
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         while (true) {
@@ -28,5 +27,10 @@ public class ASTWhile implements ASTNode {
                 throw new InterpreterError("Condition of while loop must be a boolean value");
             }
         }
+    }
+
+    @Override
+    public String toStr() {
+        return "while " + this.test.toStr() + "{ " + this.body.toStr() + "}; ";
     }
 }

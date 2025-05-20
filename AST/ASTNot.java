@@ -19,4 +19,9 @@ public class ASTNot implements ASTNode {
             throw new InterpreterError("Illegal type for 'not' operatior. Boolean required");
         }
     }
+
+    @Override
+    public String toStr() {
+        return "~" + this.exp.toStr();
+    }
 }

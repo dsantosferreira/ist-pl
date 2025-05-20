@@ -25,4 +25,9 @@ public class ASTAssign implements ASTNode {
             throw new InterpreterError("l-value of assignment should be a reference");
         }
     }
+
+    @Override
+    public String toStr() {
+        return this.l.toStr() + " := " + this.r.toStr() + "; ";
+    }
 }

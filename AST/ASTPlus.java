@@ -21,6 +21,11 @@ public class ASTPlus implements ASTNode {
         throw new InterpreterError("illegal types to + operator");
     }
 
+    @Override
+    public String toStr() {
+        return this.lhs.toStr() + " + " +this.rhs.toStr();
+    }
+
     public ASTPlus(ASTNode l, ASTNode r) {
         lhs = l;
         rhs = r;

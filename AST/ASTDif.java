@@ -27,4 +27,9 @@ public class ASTDif implements ASTNode {
             throw new InterpreterError("Invalid types for equality operation. Both values must be either integers");
         }
     }
+
+    @Override
+    public String toStr() {
+        return this.exp1.toStr() + " - " + this.exp2.toStr();
+    }
 }

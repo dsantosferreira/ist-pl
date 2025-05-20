@@ -6,7 +6,6 @@ import values.IValue;
 import values.VInt;
 
 public class ASTMult implements ASTNode {
-
         ASTNode lhs, rhs;
 
         public IValue eval(Environment<IValue> e) throws InterpreterError {
@@ -21,9 +20,13 @@ public class ASTMult implements ASTNode {
             }
         }
 
-        public ASTMult(ASTNode l, ASTNode r) {
-                lhs = l;
-                rhs = r;
-        }
+    public ASTMult(ASTNode l, ASTNode r) {
+        lhs = l;
+        rhs = r;
+    }
 
+    @Override
+    public String toStr() {
+        return this.lhs + " * " + this.rhs.toStr();
+    }
 }

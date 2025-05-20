@@ -28,6 +28,6 @@ public class VLazyList implements IValue {
     // TODO: Print de lazy lists deve avaliar o corpo?
     @Override
     public String toStr() {
-        return "???";
+        return this.head.toStr() + ":?" + this.tail.toStr();
     }
 }

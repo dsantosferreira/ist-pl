@@ -15,4 +15,9 @@ public class ASTBool implements ASTNode {
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         return new VBool(b);
     }
+
+    @Override
+    public String toStr() {
+        return Boolean.toString(b);
+    }
 }

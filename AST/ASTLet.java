@@ -25,4 +25,15 @@ public class ASTLet implements ASTNode {
         this.decls = decls;
         this.body = b;
     }
+
+    @Override
+    public String toStr() {
+        StringBuilder code = new StringBuilder();
+
+        for (Bind bind : decls) {
+            code.append("let ").append(bind.getId()).append(" = ").append(bind.getExp().toStr()).append("; ");
+        }
+
+        return code.append(this.body.toStr()).toString();
+    }
 }

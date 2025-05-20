@@ -17,4 +17,9 @@ public class ASTSeq implements ASTNode {
         s1.eval(e);
         return this.s2.eval(e);
     }
+
+    @Override
+    public String toStr() {
+        return this.s1.toStr() + "; " + this.s2.toStr();
+    }
 }

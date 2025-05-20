@@ -18,4 +18,9 @@ public class ASTFn implements ASTNode {
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         return new VClosure(e, this.var, this.body);
     }
+
+    @Override
+    public String toStr() {
+        return "\\" + this.var + ".(" + this.body.toStr() + ")";
+    }
 }

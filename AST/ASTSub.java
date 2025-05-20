@@ -6,7 +6,6 @@ import values.IValue;
 import values.VInt;
 
 public class ASTSub implements ASTNode {
-
     ASTNode lhs, rhs;
 
     public IValue eval(Environment<IValue> e) throws InterpreterError {
@@ -19,9 +18,13 @@ public class ASTSub implements ASTNode {
 		}
     }
 
-    public ASTSub(ASTNode l, ASTNode r) {
+	public ASTSub(ASTNode l, ASTNode r) {
 		lhs = l;
 		rhs = r;
     }
 
+	@Override
+	public String toStr() {
+		return this.lhs.toStr() + " - " + this.rhs.toStr();
+	}
 }

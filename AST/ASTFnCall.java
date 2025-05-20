@@ -26,4 +26,9 @@ public class ASTFnCall implements ASTNode {
             throw new InterpreterError("Was expecting a function to apply argument " + argumentExp);
         }
     }
+
+    @Override
+    public String toStr() {
+        return this.func.toStr() + "(" + this.argument.toStr() + ")";
+    }
 }

@@ -17,11 +17,15 @@ public class ASTNeg implements ASTNode {
 			throw new InterpreterError("illegal types to neg operator");
 		}
     }
-        
-    public ASTNeg(ASTNode e)
+
+	public ASTNeg(ASTNode e)
     {
 	exp = e;
     }
 
+	@Override
+	public String toStr() {
+		return "-" + this.exp.toStr();
+	}
 }
 
