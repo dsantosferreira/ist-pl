@@ -125,7 +125,7 @@ ASTNode Let() :
     (
     t = Seq()
     |
-    ((<LET>  n=<Id>  <EQUAL> e1 = List() <SEMIC>
+    ((<LET>  n=<Id>  <EQUAL> e1 = BA() <SEMIC>
       { decls.add(new Bind(n.image,e1)); }
      )+
         e2 = Seq() { t = new ASTLet(decls, e2); })
@@ -152,24 +152,12 @@ ASTNode SeqExp() :
     ASTNode t1, t2;
 }
 {
-     t1 = List() ( ( op=<ASSIGN> ) t2 = SeqExp()
+     t1 = BA() ( ( op=<ASSIGN> ) t2 = SeqExp()
  		 {
 		 t1 = new ASTAssign(t1, t2);
      } 
 		)?
      { return t1; }  
-}
-
-ASTNode List() :
-{
-    Token n;
-    ASTNode t1, t2;
-}
-{
-    t1 = BA() ( (n=<LISTSEP> | n=<LAZYLISTSEP>) t2 = List()
-                {t1 = n.kind == LISTSEP ? new ASTList(t1, t2) : new ASTLazyList(t1, t2); }
-              )?
-    {return t1;}
 }
 
 ASTNode BA() :
@@ -238,13 +226,22 @@ ASTNode Term() :
 {Token op;
   ASTNode t1, t2;}
 {
-     t1 = Fact() (
-     	  	 op=<STAR> t2 = Fact()   { t1 = new ASTMult(t1,t2); }
-		 |
-		 op=<DIV> t2 = Fact()  { t1 = new ASTDiv(t1,t2); }
-		 |
-		 op = <LPAR> t2 = List () <RPAR>  { t1 = new ASTFnCall(t1, t2); }
-		)*
+     t1 = Fact()
+     (
+        (
+             op=<STAR> t2 = Fact()   { t1 = new ASTMult(t1,t2); }
+     		 |
+     		 op=<DIV> t2 = Fact()  { t1 = new ASTDiv(t1,t2); }
+     		 |
+     		 op = <LPAR> t2 = Let() <RPAR>  { t1 = new ASTFnCall(t1, t2); }
+        )+
+        |
+        (
+            (op=<LISTSEP> | op=<LAZYLISTSEP>) t2 = Term()
+             {t1 = op.kind == LISTSEP ? new ASTList(t1, t2) : new ASTLazyList(t1, t2); }
+        )?
+     )
+
      { return t1; }
 }
 
