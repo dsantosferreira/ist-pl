@@ -28,7 +28,7 @@ public class Environment <E>{
 
     public void assoc(String id, E bind) throws InterpreterError {
         if (bindings.containsKey(id))
-            throw new InterpreterError("Variable with name " + id + " is already bound");
+            throw new InterpreterError("Variable with name " + id + " is already bound in the current environment");
         bindings.put(id, bind);
     }
 

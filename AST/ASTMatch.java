@@ -36,7 +36,7 @@ public class ASTMatch implements ASTNode {
             newEnv.assoc(id2, vLazyList.getTail().eval(vLazyList.getEnv()));
             return this.listExpr.eval(newEnv);
         } else {
-            throw new InterpreterError("Match operator is expecting a list. Got: " + listVal.toStr() + " instead");
+            throw new InterpreterError("Match operator expected a list or a nil value. Got: " + listVal.toStr() + " instead");
         }
     }
 

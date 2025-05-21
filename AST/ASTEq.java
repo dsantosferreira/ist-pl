@@ -17,15 +17,19 @@ public class ASTEq implements ASTNode {
     @Override
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         IValue v1 = exp1.eval(e);
-        IValue v2 = exp2.eval(e);
 
-        if (v1 instanceof VInt && v2 instanceof VInt) {
-            return new VBool(((VInt) v1).getVal() == ((VInt) v2).getVal());
-        } else if (v1 instanceof VBool && v2 instanceof VBool) {
-            return new VBool(((VBool) v1).getVal() == ((VBool) v2).getVal());
-        } else {
-            throw new InterpreterError("Invalid types for equality operation. Both values must be either both integers or both booleans");
+        if (v1 instanceof VInt) {
+            IValue v2 = exp2.eval(e);
+            if (v2 instanceof VInt)
+                return new VBool(((VInt) v1).getVal() == ((VInt) v2).getVal());
+            throw new InterpreterError("Equality operation expected an integer. Got " + v1.toStr() + " and " + " instead");
+        } else if (v1 instanceof VBool) {
+            IValue v2 = exp2.eval(e);
+            if (v2 instanceof VBool)
+                return new VBool(((VBool) v1).getVal() == ((VBool) v2).getVal());
+            throw new InterpreterError("Equality operation expected a boolean value. Got " + v1.toStr() + " and " + " instead");
         }
+        throw new InterpreterError("Equality operation expected either an integer or a boolean value. Got " + v1.toStr() + " and " + " instead");
     }
 
     @Override

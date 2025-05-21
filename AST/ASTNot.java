@@ -16,7 +16,7 @@ public class ASTNot implements ASTNode {
         if (v instanceof VBool) {
             return new VBool(!((VBool) v).getVal());
         } else {
-            throw new InterpreterError("Illegal type for 'not' operatior. Boolean required");
+            throw new InterpreterError("Boolean negation operation expected a boolean value. Got " + v.toStr() + " instead");
         }
     }
 

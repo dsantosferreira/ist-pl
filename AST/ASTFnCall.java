@@ -16,14 +16,14 @@ public class ASTFnCall implements ASTNode {
     @Override
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         IValue funcExp = this.func.eval(e);
-        IValue argumentExp = this.argument.eval(e);
 
         if (funcExp instanceof VClosure funcExpClosure) {
+            IValue argumentExp = this.argument.eval(e);
             Environment<IValue> funcEnv = funcExpClosure.getEnv().beginScope();
             funcEnv.assoc(funcExpClosure.getVar(), argumentExp);
             return funcExpClosure.getBody().eval(funcEnv);
         } else {
-            throw new InterpreterError("Was expecting a function to apply argument " + argumentExp);
+            throw new InterpreterError("Application operation expected a closure in the left hand side. Got " + funcExp.toStr() + " instead");
         }
     }
 

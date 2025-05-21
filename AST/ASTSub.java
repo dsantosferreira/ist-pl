@@ -10,12 +10,14 @@ public class ASTSub implements ASTNode {
 
     public IValue eval(Environment<IValue> e) throws InterpreterError {
 		IValue v1 = lhs.eval(e);
-		IValue v2 = rhs.eval(e);
-		if (v1 instanceof VInt && v2 instanceof VInt) {
-			return new VInt(((VInt) v1).getVal() - ((VInt) v2).getVal());
-		} else {
-			throw new InterpreterError("illegal types to + operator");
+		if (v1 instanceof VInt) {
+			IValue v2 = rhs.eval(e);
+			if (v2 instanceof VInt) {
+				return new VInt(((VInt) v1).getVal() - ((VInt) v2).getVal());
+			}
+			throw new InterpreterError("Subtraction operation expected an integer. Got " + v2.toStr() + " instead");
 		}
+		throw new InterpreterError("Subtraction operation expected an integer. Got " + v1.toStr() + " instead");
     }
 
 	public ASTSub(ASTNode l, ASTNode r) {

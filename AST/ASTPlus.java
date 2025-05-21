@@ -7,6 +7,12 @@ import values.VInt;
 
 public class ASTPlus implements ASTNode {
     ASTNode lhs, rhs;
+
+    public ASTPlus(ASTNode l, ASTNode r) {
+        lhs = l;
+        rhs = r;
+    }
+
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         IValue v1 = lhs.eval(e);
         if (v1 instanceof VInt) {
@@ -16,18 +22,13 @@ public class ASTPlus implements ASTNode {
                         int i2 = ((VInt) v2).getVal();
                         return new VInt(i1 + i2);
                 }
-
+            throw new InterpreterError("Addition operation expected an integer. Got " + v2.toStr() + " instead");
         }
-        throw new InterpreterError("illegal types to + operator");
+        throw new InterpreterError("Addition operation expected an integer. Got " + v1.toStr() + " instead");
     }
 
     @Override
     public String toStr() {
         return this.lhs.toStr() + " + " +this.rhs.toStr();
-    }
-
-    public ASTPlus(ASTNode l, ASTNode r) {
-        lhs = l;
-        rhs = r;
     }
 }

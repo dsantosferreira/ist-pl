@@ -19,7 +19,7 @@ public class ASTDeref implements ASTNode {
         if (varVal instanceof VCell varCell) {
             return varCell.getVal();
         } else {
-            throw new InterpreterError("Some value other than a reference was dereferenced!");
+            throw new InterpreterError("Dereference operation expected a reference. Got " + varVal.toStr() + " instead");
         }
     }
 

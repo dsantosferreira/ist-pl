@@ -5,8 +5,6 @@ import AST.*;import environment.Bind;import java.util.*;
 public class Parser {
 }
 
-// TODO: Change List parsing to the same level as an application (was too tired to be able to do it)
-
 PARSER_END(Parser)
 
 SKIP :
@@ -269,7 +267,6 @@ ASTNode Fact() :
       	   	  (<COMMA> n = <Id>  { vars.add(n.image); })*
 		  <ARROW> <LBRA> e2 = Let() <RBRA>
       {
-          // TODO: think about this
           t = new ASTFn(vars.getLast(), e2);
           for (int i = vars.size() - 2; i >= 0; i--) {
               t = new ASTFn(vars.get(i), t);

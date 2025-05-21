@@ -11,6 +11,11 @@ public class ASTLet implements ASTNode {
     List<Bind> decls;
     ASTNode body;
 
+    public ASTLet(List<Bind> decls, ASTNode b) {
+        this.decls = decls;
+        this.body = b;
+    }
+
     public IValue eval(Environment<IValue> e) throws InterpreterError {
 	    Environment<IValue> en = e.beginScope();
 
@@ -19,11 +24,6 @@ public class ASTLet implements ASTNode {
         }
 
         return body.eval(en);
-    }
-
-    public ASTLet(List<Bind> decls, ASTNode b) {
-        this.decls = decls;
-        this.body = b;
     }
 
     @Override

@@ -24,7 +24,7 @@ public class ASTIf implements ASTNode {
             else
                 return bfalse.eval(e);
         } else {
-            throw new InterpreterError("Condition of if statement should be a boolean value");
+            throw new InterpreterError("If expression expected a boolean value in its condition. Got " + testVal.toStr() + " instead");
         }
     }
 

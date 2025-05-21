@@ -22,7 +22,7 @@ public class ASTAssign implements ASTNode {
             lCell.storeVal(rVal);
             return rVal;
         } else {
-            throw new InterpreterError("l-value of assignment should be a reference");
+            throw new InterpreterError("Expected left hand side of assignment to reduce to a reference. Got " + lVal.toStr() + " instead");
         }
     }
 

@@ -16,13 +16,14 @@ public class ASTOr implements ASTNode {
     @Override
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         IValue v1 = exp1.eval(e);
-        IValue v2 = exp2.eval(e);
 
-        if (v1 instanceof VBool && v2 instanceof VBool) {
-            return new VBool(((VBool) v1).getVal() || ((VBool) v2).getVal());
-        } else {
-            throw new InterpreterError("Invalid types for equality operation. Both values must be booleans");
+        if (v1 instanceof VBool) {
+            IValue v2 = exp2.eval(e);
+            if (v2 instanceof VBool)
+                return new VBool(((VBool) v1).getVal() || ((VBool) v2).getVal());
+            throw new InterpreterError("Boolean 'or' operation expected a boolean value. Got " + v2.toStr() + " instead");
         }
+        throw new InterpreterError("Boolean 'or' operation expected a boolean value. Got " + v1.toStr() + " instead");
     }
 
     @Override

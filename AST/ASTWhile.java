@@ -24,7 +24,7 @@ public class ASTWhile implements ASTNode {
                 else
                     return new VBool(false);
             } else {
-                throw new InterpreterError("Condition of while loop must be a boolean value");
+                throw new InterpreterError("While operation expected a boolean value as its condition. Got " + testVal.toStr() + " instead");
             }
         }
     }

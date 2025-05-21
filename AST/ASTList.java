@@ -13,7 +13,6 @@ public class ASTList implements ASTNode {
         this.tail = tail;
     }
 
-    // TODO: Check this
     @Override
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         IValue headVal = this.head.eval(e);
@@ -23,6 +22,6 @@ public class ASTList implements ASTNode {
 
     @Override
     public String toStr() {
-        return this.head.toStr() + ":" + this.tail.toStr();
+        return this.head.toStr() + "::" + this.tail.toStr();
     }
 }

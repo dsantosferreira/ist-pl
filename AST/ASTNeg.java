@@ -14,7 +14,7 @@ public class ASTNeg implements ASTNode {
 		if (v0 instanceof VInt) {
 			return new VInt(-((VInt)v0).getVal());
 		} else {
-			throw new InterpreterError("illegal types to neg operator");
+			throw new InterpreterError("Negation operation expects an integer. Got " + v0.toStr() + " instead");
 		}
     }
 
