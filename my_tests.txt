@@ -172,7 +172,22 @@ let mkl = fn n =>
         n::( mkl(n-1))
     }
 };
-reduce ( mkl (5) ) ((fn x, y => {if x >= y {x} else {y}})) ;;
+reduce ( mkl (5) ) ((fn x, y => {if x >= y {x} else {y}}));;
+
+// 19
+let sum = fn l => {
+    match l {
+        nil -> 0 |
+        x::t -> x + sum (t)
+    }
+};
+let sublistsum = fn l => {
+    match l {
+        nil -> 0 |
+        x::t -> sum(x) + sublistsum(t)
+    }
+};
+sublistsum((1::2::3::nil)::(1::2::3::nil)::(1::2::4::nil)::nil);;
 
 // Tests with lazy lists
 // Prints first 100 numbers tripled
