@@ -74,7 +74,7 @@ let f = fn b => {let c = b; a := c};
 f(5);
 !a;;
 
-// This test shows that updated storage survives inner scope of function, even if the variable "c" does no exist anymore
+// This test shows that updated storage survives inner scope of function, even if the variable "c" does not exist anymore
 // 5
 let a = box(0);
 let f = fn b => {let c = box(5); a := c};
@@ -96,6 +96,22 @@ v := 6;
 // Simple currying test
 // 6
 let f = fn a, b, c => {a + b + c}; let g = f(1); let h = g(2); h(3);;
+
+// Simple collatz sequence
+// 1
+let x = box(3);
+while !x ~= 1 {
+    if !x / 2 * 2 == !x { x := !x/2 } else { x := 3 * !x + 1 }
+};
+!x;;
+
+// 1
+let collatz = fn x => {
+    if x == 1 {x} else {
+        if x / 2 * 2 == x {collatz (x/2)} else {collatz(3*x + 1)}
+    }
+};
+collatz(3);;
 
 // Tests with static lists
 // 1::2::3::4::nil
@@ -187,6 +203,20 @@ let m = map (l) (triple);
 pfst (m) (100);;
 
 // Dynamic typing tests
+
+// Variable already bound
+let a = 1; let a = 2; a;;
+
+// Usage of undeclared variable
+let a = 1; b;;
+
+// Usage of variable out of scope
+let f = fn x => {
+    let a = x;
+    a
+};
+f(3);
+a;;
 
 // Expected two boolean values in AND operation
 let v = 1 && 1; v;;
