@@ -44,6 +44,10 @@ let b = 1;
 println(a);
 b;;
 
+// lambda@(...)\nlambda@(...)
+let f = fn x => {x};
+println(f);;
+
 // Simple assignment/box/dereferences tests
 // 6
 let fact = fn n => { let c = box (n);
@@ -93,7 +97,165 @@ v := 6;
 // 6
 let f = fn a, b, c => {a + b + c}; let g = f(1); let h = g(2); h(3);;
 
-// Tests with lists
+// Tests with static lists
+// 1::2::3::4::nil
+let concat = fn l, r => {
+    match l {
+        nil -> r |
+        x::t -> x::(concat (t) (r))
+    }
+};
+concat (1::2::nil) (3::4::nil);;
 
+// 3::2::1::nil
+let concat = fn l, r => {
+    match l {
+        nil -> r |
+        x::t -> x::(concat (t) (r))
+    }
+};
+let reverse = fn l => {
+    match l {
+        nil -> nil |
+        x::t -> concat (reverse (t)) (x::nil)
+    }
+};
+reverse (1::2::3::nil);;
+
+// 15
+let reduce = fn l, op => {
+    match l {
+        nil -> 0
+        |
+        h::t -> op (h) (reduce (t) (op))
+    }
+};
+let mkl = fn n =>
+{
+    if (n==0) {
+        nil
+    } else {
+        n::( mkl(n-1))
+    }
+};
+reduce ( mkl (5) ) ((fn x, y => {x + y})) ;;
+
+// 5
+let reduce = fn l, op => {
+    match l {
+        nil -> 0
+        |
+        h::t -> op (h) (reduce (t) (op))
+    }
+};
+let mkl = fn n =>
+{
+    if (n==0) {
+        nil
+    } else {
+        n::( mkl(n-1))
+    }
+};
+reduce ( mkl (5) ) ((fn x, y => {if x >= y {x} else {y}})) ;;
+
+// Tests with lazy lists
+// Prints first 100 numbers tripled
+let intsfm = fn n => {
+    n:? (intsfm (n+1))
+};
+let map = fn l, g => {
+    match l {
+        nil -> nil
+    |
+        h::t -> (g(h)):?(map(t)(g))
+    }
+};
+let pfst = fn l,n => {
+    if (n==0) {
+        println(n)
+    } else {
+        match l {
+            nil -> 0
+            |
+            h::t -> println(h); pfst (t) (n-1)
+        }
+    }
+};
+let l = intsfm (0);
+let triple = fn n => { n*3 };
+let m = map (l) (triple);
+pfst (m) (100);;
 
 // Dynamic typing tests
+
+// Expected two boolean values in AND operation
+let v = 1 && 1; v;;
+let v = true && 2; v;;
+
+// Expected two boolean values in OR operation
+let v = 1 || 1; v;;
+let v = true || 2; v;;
+
+// Expected boolean value in negation operation
+let v = ~1; v;;
+
+// Expected reference in left hand side of assignment operation
+let a = box(0); !a := 1;
+let a = box(0); 1 := 1;
+
+// Expected reference in dereference operation
+let a = 0; !a;;
+
+// Expected either two integers or two boolean values in ~= operation
+let a = 1 ~= true; a;;
+let a = true ~= 1; a;;
+let a = 1::nil ~= true; a;;
+
+// Expected two integers in division operation
+let a = 1 / true; a;;
+let a = true / 1; a;;
+
+// Expected two integers in multiplication operation
+let a = 1 * true; a;;
+let a = true * 1; a;;
+
+// Expected two integers in addition operation
+let a = 1 + true; a;;
+let a = true + 1; a;;
+
+// Expected two integers in subtraction operation
+let a = 1 - true; a;;
+let a = true - 1; a;;
+
+// Expected either two integers or two booleans in equality operation
+let a = 1 == true; a;;
+let a = true == 1; a;;
+let a = 1::nil ~= true; a;;
+
+// Expected closure in left hand side of application
+let a = 1; a(1);;
+
+// Expected two integers in >= operation
+let a = 1 >= true; a;;
+let a = true >= 1; a;;
+
+// Expected two integers in > operation
+let a = 1 > true; a;;
+let a = true > 1; a;;
+
+// Expected two integers in < operation
+let a = 1 < true; a;;
+let a = true < 1; a;;
+
+// Expected two integers in <= operation
+let a = 1 <= true; a;;
+let a = true <= 1; a;;
+
+// Expected boolean value in if statement condition
+let a = 1; if a {1} else {2};;
+
+// Expected boolean value in while statement condition
+let a = 1; while a {1};;
+
+// Expected either a list or nil in match operator
+let a = 1; match a {nil -> nil | x::t -> x};;

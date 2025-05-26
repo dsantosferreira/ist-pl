@@ -22,13 +22,13 @@ public class ASTEq implements ASTNode {
             IValue v2 = exp2.eval(e);
             if (v2 instanceof VInt)
                 return new VBool(((VInt) v1).getVal() == ((VInt) v2).getVal());
-            throw new InterpreterError("Equality operation expected an integer. Got " + v1.toStr() + " and " + " instead");
+            throw new InterpreterError("Equality operation expected an integer. Got " + v1.toStr() + " instead");
         } else if (v1 instanceof VBool) {
             IValue v2 = exp2.eval(e);
             if (v2 instanceof VBool)
                 return new VBool(((VBool) v1).getVal() == ((VBool) v2).getVal());
-            throw new InterpreterError("Equality operation expected a boolean value. Got " + v1.toStr() + " and " + " instead");
+            throw new InterpreterError("Equality operation expected a boolean value. Got " + v1.toStr() + " instead");
         }
-        throw new InterpreterError("Equality operation expected either an integer or a boolean value. Got " + v1.toStr() + " and " + " instead");
+        throw new InterpreterError("Equality operation expected either an integer or a boolean value. Got " + v1.toStr() + " instead");
     }
 }
