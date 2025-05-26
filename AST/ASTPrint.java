@@ -17,9 +17,4 @@ public class ASTPrint implements ASTNode {
         System.out.print(varValue.toStr());
         return varValue;
     }
-
-    @Override
-    public String toStr() {
-        return "print(" + this.var.toStr() + "); ";
-    }
 }

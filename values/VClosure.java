@@ -28,6 +28,6 @@ public class VClosure implements IValue {
 
     @Override
     public String toStr() {
-        return "\\" + this.var + ".(" + this.body.toStr() + ")";
+        return "lambda@" + this;
     }
 }

@@ -39,10 +39,4 @@ public class ASTMatch implements ASTNode {
             throw new InterpreterError("Match operator expected a list or a nil value. Got: " + listVal.toStr() + " instead");
         }
     }
-
-    @Override
-    public String toStr() {
-        return "match " + this.list.toStr() + "{ nil -> " + this.nilExpr.toStr() + " | " + this.id1 + ":" + this.id2 +
-                " -> " + this.listExpr.toStr() + "}; ";
-    }
 }

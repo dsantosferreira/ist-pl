@@ -31,9 +31,4 @@ public class ASTDif implements ASTNode {
         }
         throw new InterpreterError("Inequality operation expected either an integer or a boolean value. Got " + v1.toStr() + " instead");
     }
-
-    @Override
-    public String toStr() {
-        return this.exp1.toStr() + " - " + this.exp2.toStr();
-    }
 }

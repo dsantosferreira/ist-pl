@@ -26,9 +26,4 @@ public class ASTGt implements ASTNode {
         }
         throw new InterpreterError("Greater than operation expected an integer. Got " + v1.toStr() + " instead");
     }
-
-    @Override
-    public String toStr() {
-        return this.exp1.toStr() + " > " + this.exp2.toStr();
-    }
 }

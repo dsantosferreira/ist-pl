@@ -26,9 +26,4 @@ public class ASTGteq implements ASTNode {
         }
         throw new InterpreterError("Greater than or equal operation expected an integer. Got " + v1.toStr() + " instead");
     }
-
-    @Override
-    public String toStr() {
-        return this.exp1.toStr() + " >= " + this.exp2.toStr();
-    }
 }

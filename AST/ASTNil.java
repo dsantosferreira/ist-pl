@@ -10,9 +10,4 @@ public class ASTNil implements ASTNode {
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         return new VNil();
     }
-
-    @Override
-    public String toStr() {
-        return "nil";
-    }
 }

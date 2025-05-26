@@ -25,9 +25,4 @@ public class ASTAnd implements ASTNode {
         }
         throw new InterpreterError("Logical 'and' operation expected a boolean value. Got " + v1.toStr() + " instead");
     }
-
-    @Override
-    public String toStr() {
-        return this.exp1.toStr() + " && " + this.exp2.toStr();
-    }
 }

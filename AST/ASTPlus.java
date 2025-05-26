@@ -26,9 +26,4 @@ public class ASTPlus implements ASTNode {
         }
         throw new InterpreterError("Addition operation expected an integer. Got " + v1.toStr() + " instead");
     }
-
-    @Override
-    public String toStr() {
-        return this.lhs.toStr() + " + " +this.rhs.toStr();
-    }
 }

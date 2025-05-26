@@ -19,9 +19,4 @@ public class ASTNot implements ASTNode {
             throw new InterpreterError("Boolean negation operation expected a boolean value. Got " + v.toStr() + " instead");
         }
     }
-
-    @Override
-    public String toStr() {
-        return "~" + this.exp.toStr();
-    }
 }

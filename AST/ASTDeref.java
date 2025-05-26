@@ -22,9 +22,4 @@ public class ASTDeref implements ASTNode {
             throw new InterpreterError("Dereference operation expected a reference. Got " + varVal.toStr() + " instead");
         }
     }
-
-    @Override
-    public String toStr() {
-        return "!" + this.var.toStr();
-    }
 }

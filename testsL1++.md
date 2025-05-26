@@ -59,13 +59,14 @@ suml(l100)
 
 // Lazy Lists
 
-// 1\n2:?nil\n2:?nil
+// 1\nlazylist@(...)\nlazylist@(...)
 let l = 1:?2:?nil;
 match l {
     nil -> println(nil)
 |   x::y -> println(x); println(y)
 };;
 
+// 1\n2::nil\n2::nil
 let l = 1:?2::nil;
 match l {
     nil -> println(nil)

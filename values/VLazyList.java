@@ -27,6 +27,6 @@ public class VLazyList implements IValue {
 
     @Override
     public String toStr() {
-        return this.head.toStr() + ":?" + this.tail.toStr();
+        return "lazylist@" + this;
     }
 }

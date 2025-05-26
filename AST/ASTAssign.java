@@ -25,9 +25,4 @@ public class ASTAssign implements ASTNode {
             throw new InterpreterError("Expected left hand side of assignment to reduce to a reference. Got " + lVal.toStr() + " instead");
         }
     }
-
-    @Override
-    public String toStr() {
-        return this.l.toStr() + " := " + this.r.toStr() + "; ";
-    }
 }

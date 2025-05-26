@@ -19,9 +19,4 @@ public class ASTList implements ASTNode {
         IValue tailVal = this.tail.eval(e);
         return new VList(headVal, tailVal);
     }
-
-    @Override
-    public String toStr() {
-        return this.head.toStr() + "::" + this.tail.toStr();
-    }
 }

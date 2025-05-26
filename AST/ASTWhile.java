@@ -28,9 +28,4 @@ public class ASTWhile implements ASTNode {
             }
         }
     }
-
-    @Override
-    public String toStr() {
-        return "while " + this.test.toStr() + "{ " + this.body.toStr() + "}; ";
-    }
 }

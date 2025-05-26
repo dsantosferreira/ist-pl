@@ -26,9 +26,4 @@ public class ASTLt implements ASTNode {
         }
         throw new InterpreterError("Less than operation expected an integer. Got " + v1.toStr() + " instead");
     }
-
-    @Override
-    public String toStr() {
-        return this.exp1.toStr() + " < " + this.exp2.toStr();
-    }
 }

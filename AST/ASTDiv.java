@@ -26,9 +26,4 @@ public class ASTDiv implements ASTNode {
 		lhs = l;
 		rhs = r;
     }
-
-	@Override
-	public String toStr() {
-		return this.lhs.toStr() + " / " + this.rhs.toStr();
-	}
 }

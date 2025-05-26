@@ -16,9 +16,4 @@ public class ASTBox implements ASTNode {
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         return new VCell(val.eval(e));
     }
-
-    @Override
-    public String toStr() {
-        return "box(" + this.val.toStr() + ")";
-    }
 }

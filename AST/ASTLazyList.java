@@ -17,9 +17,4 @@ public class ASTLazyList implements ASTNode {
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         return new VLazyList(e, this.head, this.tail);
     }
-
-    @Override
-    public String toStr() {
-        return this.head.toStr() + ":?" +  this.tail.toStr();
-    }
 }

@@ -22,10 +22,5 @@ public class ASTNeg implements ASTNode {
     {
 	exp = e;
     }
-
-	@Override
-	public String toStr() {
-		return "-" + this.exp.toStr();
-	}
 }
 

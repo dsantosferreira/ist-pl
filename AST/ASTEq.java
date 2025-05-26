@@ -31,9 +31,4 @@ public class ASTEq implements ASTNode {
         }
         throw new InterpreterError("Equality operation expected either an integer or a boolean value. Got " + v1.toStr() + " and " + " instead");
     }
-
-    @Override
-    public String toStr() {
-        return this.exp1.toStr() + " == " + this.exp2.toStr();
-    }
 }

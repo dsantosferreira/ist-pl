@@ -26,9 +26,4 @@ public class ASTMult implements ASTNode {
         lhs = l;
         rhs = r;
     }
-
-    @Override
-    public String toStr() {
-        return this.lhs + " * " + this.rhs.toStr();
-    }
 }

@@ -26,9 +26,4 @@ public class ASTFnCall implements ASTNode {
             throw new InterpreterError("Application operation expected a closure in the left hand side. Got " + funcExp.toStr() + " instead");
         }
     }
-
-    @Override
-    public String toStr() {
-        return this.func.toStr() + "(" + this.argument.toStr() + ")";
-    }
 }

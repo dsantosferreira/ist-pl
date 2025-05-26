@@ -15,9 +15,4 @@ public class ASTInt implements ASTNode  {
     public IValue eval(Environment<IValue> e) throws InterpreterError {
 	    return new VInt(v);
     }
-
-    @Override
-    public String toStr() {
-        return Integer.toString(v);
-    }
 }
