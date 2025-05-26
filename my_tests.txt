@@ -233,6 +233,9 @@ let f = fn x => {
 f(3);
 a;;
 
+// List operator is more binding than arithmetic/logical operators. Gives error because tries to sum 1::2 with 3
+let a = 1::2+3; a;;
+
 // Expected two boolean values in AND operation
 let v = 1 && 1; v;;
 let v = true && 2; v;;
