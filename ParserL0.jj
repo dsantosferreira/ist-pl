@@ -17,7 +17,6 @@ SKIP :
 
 TOKEN :
 {
-
   < LET : "let" >
   |
   < TRUE: "true" >
@@ -43,6 +42,10 @@ TOKEN :
   < LBRA : "{" >
   |
   < RBRA : "}" >
+  |
+  < LSBRA : "[" >
+  |
+  < RSBRA : "]" >
   |
   < EQUAL : "=" >
   |
@@ -100,6 +103,24 @@ TOKEN :
   |
   < MATCHARROW : "->">
   |
+  < TYPE : "type" >
+  |
+  < INT : "int" >
+  |
+  < BOOL : "bool" >
+  |
+  < UNIT : "()" >
+  |
+  < STRING : "string" >
+  |
+  < REF : "ref" >
+  |
+  < LIST : "list" >
+  |
+  < UNION  : "union" >
+  |
+  < STRUCT  : "struct" >
+  |
   < String: "\"" ( (~["\"","\\"]) | ("\\" ( ["n","t","b","r","f","\\","\""] ) ) )* "\"" >
   |
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
@@ -119,17 +140,22 @@ ASTNode Let() :
   ASTNode t, e1, e2;
   List<Bind> decls  = new ArrayList<Bind>();
 }
-{ 
+{
+    // TODO: Why is this correct? Does this allow programs such as type a = (...); let b = (...); seq() ???
     (
-    t = Seq()
-    |
-    ((<LET>  n=<Id>  <EQUAL> e1 = BA() <SEMIC>
-      { decls.add(new Bind(n.image,e1)); }
-     )+
-        e2 = Seq() { t = new ASTLet(decls, e2); })
+        t = Seq()
+        |
+        (<LET>  n=<Id>  <EQUAL> e1 = BA() <SEMIC>
+          { decls.add(new Bind(n.image,e1)); } )+
+            e2 = Seq() { t = new ASTLet(decls, e2); }
+        |
+         {  HashMap<String,ASTType> lbl = new HashMap<>(); }
+       (<TYPE>  n=<Id>  <EQUAL> t1 = Type() <SEMIC>
+          { lbl.put(n.image, t1); } )+
+            e2 = Seq() { t = new ASTTypeDef(lbl, e2); }
+
     )
-    
-   { return t; }
+    { return t; }
 }
 
 ASTNode Seq() :
@@ -246,7 +272,9 @@ ASTNode Term() :
 ASTNode Fact() :
 { Token m, n;
   ASTNode t, e1, e2;
+  ASTType type;
   List<String> vars = new ArrayList<>();
+  List<ASTType> types = new ArrayList<>();
   List<Bind> decls = new ArrayList<>();
   ASTNode body, alt;
 }
@@ -263,13 +291,13 @@ ASTNode Fact() :
     | <NOT> t=Fact() { t = new ASTNot(t); }
     | <IF> t=BA() <LBRA> e1=Let() <RBRA> <ELSE> <LBRA> e2=Let() <RBRA> { t = new ASTIf(t, e1, e2); }
     | <WHILE> t=BA() <LBRA> body=Let() <RBRA> { t = new ASTWhile(t, body); }
-    | <FN> n=<Id> { vars.add(n.image); }
-      	   	  (<COMMA> n = <Id>  { vars.add(n.image); })*
+    | <FN> n=<Id> <COLON> type=Type() { vars.add(n.image); types.add(type); }
+      	   	  (<COMMA> n = <Id>  { vars.add(n.image); types.add(type); })*
 		  <ARROW> <LBRA> e2 = Let() <RBRA>
       {
           t = new ASTFn(vars.getLast(), e2);
           for (int i = vars.size() - 2; i >= 0; i--) {
-              t = new ASTFn(vars.get(i), t);
+              t = new ASTFn(vars.get(i), types.get(i), t);
           }
       }
     | <MATCH> t = Let() <LBRA> <NIL> <MATCHARROW> e1 = Let() <MATCHSEP> m=<Id> <LISTSEP> n=<Id> <MATCHARROW> e2 = Let() <RBRA>
@@ -279,4 +307,49 @@ ASTNode Fact() :
     | <LPAR> t=Let() <RPAR> 
     )
    { return t; }
+}
+
+ASTType Type() :
+{
+  ASTType t1, t2;
+}
+{
+    t1 = TypeF() (<MATCHARROW> t2 = Type() { t1 = new ASTTArrow(t1,t2);} )?
+    { return t1; }
+}
+
+TypeBindList LabelList() :
+{
+  ASTType t;
+  HashMap<String,ASTType> ll;
+  Token n;
+}
+{   { ll = new HashMap<String,ASTType>() ; }
+    // TODO: Why is this optional?
+    ( n=<Id>  <COLON> t = Type() { ll.put(n.image,t); }
+              (<COMMA> n=<Id> <COLON> t = Type() { ll.put(n.image,t);} )*
+    )?
+    { return new TypeBindList(ll); }
+}
+
+ASTType TypeF() :
+{
+  ASTType t;
+  TypeBindList ll;
+  Token n;
+}
+{
+    (
+          <INT> { t = new ASTTInt(); }
+        | n=<Id> { t = new ASTTId(n.image); }
+        | <BOOL> { t = new ASTTBool(); }
+        | <UNIT> { t = new ASTTUnit(); }
+        | <STRING> { t = new ASTTString(); }
+        | <REF> <LT> t=Type() <GT> { t = new ASTTRef(t); }
+        | <LIST> <LT> t=Type() <GT> { t = new ASTTList(t); }
+        | <STRUCT> <LBRA> ll = LabelList() <RBRA> { t = new ASTTStruct(ll); return t; }
+        | <UNION> <LSBRA> ll = LabelList() <RSBRA> { t = new ASTTUnion(ll); return t; }
+        | <LPAR> t = Type() <RPAR> { return t; }
+    )
+    { return t; }
 }
