@@ -1,7 +1,10 @@
 package AST;
 
+import ASTTypes.ASTTArrow;
+import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
+import errors.TypeCheckError;
 import values.IValue;
 import values.VClosure;
 
@@ -25,5 +28,19 @@ public class ASTFnCall implements ASTNode {
         } else {
             throw new InterpreterError("Application operation expected a closure in the left hand side. Got " + funcExp.toStr() + " instead");
         }
+    }
+
+    @Override
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+        ASTType argType = argument.typecheck(e);
+        ASTType funcType = func.typecheck(e);
+
+        if (funcType instanceof ASTTArrow funcArrow) {
+            if (argType.getClass().equals(funcArrow.getDom().getClass()))
+                return funcArrow.getCodom();
+            else
+                throw new TypeCheckError("Expected an argument of type " + funcArrow.getDom().toStr() + " to apply to function");
+        } else
+            throw new TypeCheckError("Expected a function to apply to argument of type " + argType.toStr());
     }
 }

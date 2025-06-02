@@ -1,7 +1,11 @@
 package AST;
 
+import ASTTypes.ASTTBool;
+import ASTTypes.ASTTInt;
+import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
+import errors.TypeCheckError;
 import values.IValue;
 import values.VBool;
 import values.VInt;
@@ -25,5 +29,20 @@ public class ASTGt implements ASTNode {
             throw new InterpreterError("Greater than operation expected an integer. Got " + v2.toStr() + " instead");
         }
         throw new InterpreterError("Greater than operation expected an integer. Got " + v1.toStr() + " instead");
+    }
+
+    @Override
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+        ASTType t1 = exp1.typecheck(e);
+
+        if (t1 instanceof ASTTInt) {
+            ASTType t2 = exp2.typecheck(e);
+
+            if (t2 instanceof ASTTInt)
+                return new ASTTBool();
+            else
+                throw new TypeCheckError("Illegal type for second operand in > operation " + t2.toStr());
+        } else
+            throw new TypeCheckError("Illegal type for first operand in > operation " + t1.toStr());
     }
 }

@@ -1,7 +1,10 @@
 package AST;
 
+import ASTTypes.ASTTRef;
+import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
+import errors.TypeCheckError;
 import values.IValue;
 import values.VCell;
 
@@ -21,5 +24,15 @@ public class ASTDeref implements ASTNode {
         } else {
             throw new InterpreterError("Dereference operation expected a reference. Got " + varVal.toStr() + " instead");
         }
+    }
+
+    @Override
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+        ASTType t = var.typecheck(e);
+
+        if (t instanceof ASTTRef tRef) {
+            return tRef.getType();
+        } else
+            throw new TypeCheckError("Illegal type for dereference operation: " + t.toStr());
     }
 }

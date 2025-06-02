@@ -1,7 +1,10 @@
 package AST;
 
+import ASTTypes.ASTTBool;
+import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
+import errors.TypeCheckError;
 import values.IValue;
 import values.VBool;
 
@@ -24,5 +27,21 @@ public class ASTAnd implements ASTNode {
             throw new InterpreterError("Logical 'and' operation expected a boolean value. Got " + v2.toStr() + " instead");
         }
         throw new InterpreterError("Logical 'and' operation expected a boolean value. Got " + v1.toStr() + " instead");
+    }
+
+    @Override
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+        ASTType t1 = exp1.typecheck(e);
+
+        if (t1 instanceof ASTTBool) {
+            ASTType t2 = exp2.typecheck(e);
+
+            if (t2 instanceof ASTTBool)
+                return t1;
+            else
+                throw new TypeCheckError("Illegal type of second operator in 'and' operation: " + t2.toStr());
+        } else {
+            throw new TypeCheckError("Illegal type of first operator in 'and' operation: " + t1.toStr());
+        }
     }
 }

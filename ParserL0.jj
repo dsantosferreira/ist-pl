@@ -1,6 +1,6 @@
 PARSER_BEGIN(Parser)
 
-import AST.*;import environment.Bind;import java.util.*;
+import AST.*;import environment.Bind;import java.util.*; import ASTTypes.*;
 
 public class Parser {
 }
@@ -138,6 +138,7 @@ ASTNode Start():
 ASTNode Let() :
 { Token n; 
   ASTNode t, e1, e2;
+  ASTType t1;
   List<Bind> decls  = new ArrayList<Bind>();
 }
 {
@@ -295,7 +296,7 @@ ASTNode Fact() :
       	   	  (<COMMA> n = <Id>  { vars.add(n.image); types.add(type); })*
 		  <ARROW> <LBRA> e2 = Let() <RBRA>
       {
-          t = new ASTFn(vars.getLast(), e2);
+          t = new ASTFn(vars.getLast(), types.getLast(), e2);
           for (int i = vars.size() - 2; i >= 0; i--) {
               t = new ASTFn(vars.get(i), types.get(i), t);
           }

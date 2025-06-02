@@ -1,5 +1,6 @@
 package environment;
 
+import errors.EnvironmentError;
 import errors.InterpreterError;
 
 import java.util.*;
@@ -26,19 +27,19 @@ public class Environment <E>{
         return anc;
     }
 
-    public void assoc(String id, E bind) throws InterpreterError {
+    public void assoc(String id, E bind) throws EnvironmentError {
         if (bindings.containsKey(id))
-            throw new InterpreterError("Variable with name " + id + " is already bound in the current environment");
+            throw new EnvironmentError("Variable with name " + id + " is already bound in the current environment");
         bindings.put(id, bind);
     }
 
 
-    public E find(String id) throws InterpreterError {
+    public E find(String id) throws EnvironmentError {
         if (bindings.containsKey(id))
             return bindings.get(id);
         else if (anc != null)
             return anc.find(id);
         else
-            throw new InterpreterError("Value of variable " + id + " is not set");
+            throw new EnvironmentError("Value of variable " + id + " is not set");
     }
 }

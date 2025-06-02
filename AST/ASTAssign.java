@@ -1,7 +1,10 @@
 package AST;
 
+import ASTTypes.ASTTRef;
+import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
+import errors.TypeCheckError;
 import values.IValue;
 import values.VCell;
 
@@ -24,5 +27,20 @@ public class ASTAssign implements ASTNode {
         } else {
             throw new InterpreterError("Expected left hand side of assignment to reduce to a reference. Got " + lVal.toStr() + " instead");
         }
+    }
+
+    @Override
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+        ASTType lType = l.typecheck(e);
+
+        if (lType instanceof ASTTRef lRef) {
+            ASTType rType = r.typecheck(e);
+
+            if (lRef.getType().getClass().equals(rType.getClass())) {
+                return lRef.getType();
+            } else
+                throw new TypeCheckError("Tried to assign value of type " + rType.toStr() + " to variable of type " + lType.toStr());
+        } else
+            throw new TypeCheckError("Illegal type for left hand side of assignemnt operation: " + lType.toStr());
     }
 }

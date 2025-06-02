@@ -1,7 +1,10 @@
 package AST;
 
+import ASTTypes.ASTTList;
+import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
+import errors.TypeCheckError;
 import values.IValue;
 import values.VLazyList;
 import values.VList;
@@ -38,5 +41,27 @@ public class ASTMatch implements ASTNode {
         } else {
             throw new InterpreterError("Match operator expected a list or a nil value. Got " + listVal.toStr() + " instead");
         }
+    }
+
+    // TODO: need to handle case where list is totally empty
+    @Override
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+        ASTType listType = list.typecheck(e);
+
+        if (listType instanceof ASTTList listT) {
+            ASTType nilType = nilExpr.typecheck(e);
+
+            Environment<ASTType> newEnv = e.beginScope();
+            newEnv.assoc(id1, listT.getElt());
+            newEnv.assoc(id2, listT);
+
+            ASTType listExprType = listExpr.typecheck(newEnv);
+
+            if (nilType.getClass().equals(listExprType.getClass()))
+                return nilType;
+            else
+                throw new TypeCheckError("Types of both cases of match construct must be the same. Got: " + nilType.toStr() + " and " + listExprType.toStr());
+        } else
+            throw new TypeCheckError("Invalid type for match construct. Expected list, got: " + listType.toStr());
     }
 }

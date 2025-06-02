@@ -1,7 +1,10 @@
 package AST;
 
+import ASTTypes.ASTTBool;
+import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
+import errors.TypeCheckError;
 import values.IValue;
 import values.VBool;
 
@@ -27,5 +30,15 @@ public class ASTWhile implements ASTNode {
                 throw new InterpreterError("While operation expected a boolean value as its condition. Got " + testVal.toStr() + " instead");
             }
         }
+    }
+
+    @Override
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+        ASTType condType = test.typecheck(e);
+
+        if (condType instanceof ASTTBool) {
+            return body.typecheck(e);
+        } else
+            throw new TypeCheckError("Invalid type for while statement condition: " + condType.toStr());
     }
 }

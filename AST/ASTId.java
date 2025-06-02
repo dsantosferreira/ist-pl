@@ -1,7 +1,8 @@
 package AST;
 
+import ASTTypes.ASTType;
 import environment.Environment;
-import errors.InterpreterError;
+import errors.EnvironmentError;
 import values.IValue;
 
 public class ASTId implements ASTNode {
@@ -11,7 +12,12 @@ public class ASTId implements ASTNode {
         this.id = id;
     }
 
-    public IValue eval(Environment<IValue> env)	throws InterpreterError {
+    public IValue eval(Environment<IValue> env) throws EnvironmentError {
         return env.find(id);
+    }
+
+    @Override
+    public ASTType typecheck(Environment<ASTType> e) throws EnvironmentError {
+        return e.find(id);
     }
 }

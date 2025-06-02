@@ -1,7 +1,11 @@
 package AST;
 
+import ASTTypes.ASTTBool;
+import ASTTypes.ASTTInt;
+import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
+import errors.TypeCheckError;
 import values.IValue;
 import values.VInt;
 
@@ -25,5 +29,20 @@ public class ASTPlus implements ASTNode {
             throw new InterpreterError("Addition operation expected an integer. Got " + v2.toStr() + " instead");
         }
         throw new InterpreterError("Addition operation expected an integer. Got " + v1.toStr() + " instead");
+    }
+
+    @Override
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+        ASTType t1 = lhs.typecheck(e);
+
+        if (t1 instanceof ASTTInt) {
+            ASTType t2 = rhs.typecheck(e);
+
+            if (t2 instanceof ASTTInt)
+                return t1;
+            else
+                throw new TypeCheckError("Illegal type for second operand in addition operation " + t2.toStr());
+        } else
+            throw new TypeCheckError("Illegal type for first operand in addition operation " + t1.toStr());
     }
 }
