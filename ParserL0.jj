@@ -43,9 +43,7 @@ TOKEN :
   |
   < RBRA : "}" >
   |
-  < LSBRA : "[" >
-  |
-  < RSBRA : "]" >
+  < DOT : "." >
   |
   < EQUAL : "=" >
   |
@@ -248,8 +246,8 @@ ASTNode Exp() :
 }
 
 ASTNode Term() :
-{Token op;
-  ASTNode t1, t2;}
+{Token op, id;
+  ASTNode t1, t2 = null;}
 {
      t1 = Fact()
      (
@@ -258,7 +256,10 @@ ASTNode Term() :
      		 |
      		 op=<DIV> t2 = Fact()  { t1 = new ASTDiv(t1,t2); }
      		 |
-     		 op = <LPAR> t2 = Let() <RPAR>  { t1 = new ASTFnCall(t1, t2); }
+     		 <DOT> id=<Id>  { t1 = new ASTDot(t1, id.image); }
+     		 |
+     		 // TODO: Can this be optional? To allow f() for example
+     		 op = <LPAR> (t2 = Let())? <RPAR>  { t1 = new ASTFnCall(t1, t2); }
         )+
         |
         (
@@ -293,7 +294,7 @@ ASTNode Fact() :
     | <IF> t=BA() <LBRA> e1=Let() <RBRA> <ELSE> <LBRA> e2=Let() <RBRA> { t = new ASTIf(t, e1, e2); }
     | <WHILE> t=BA() <LBRA> body=Let() <RBRA> { t = new ASTWhile(t, body); }
     | <FN> n=<Id> <COLON> type=Type() { vars.add(n.image); types.add(type); }
-      	   	  (<COMMA> n = <Id>  { vars.add(n.image); types.add(type); })*
+      	   	  (<COMMA> n = <Id> <COLON> type=Type()  { vars.add(n.image); types.add(type); })*
 		  <ARROW> <LBRA> e2 = Let() <RBRA>
       {
           t = new ASTFn(vars.getLast(), types.getLast(), e2);
@@ -301,8 +302,10 @@ ASTNode Fact() :
               t = new ASTFn(vars.get(i), types.get(i), t);
           }
       }
-    | <MATCH> t = Let() <LBRA> <NIL> <MATCHARROW> e1 = Let() <MATCHSEP> m=<Id> <LISTSEP> n=<Id> <MATCHARROW> e2 = Let() <RBRA>
+    |  <MATCH> t = Let() <LBRA> <NIL> <MATCHARROW> e1 = Let() <MATCHSEP> m=<Id> <LISTSEP> n=<Id> <MATCHARROW> e2 = Let() <RBRA>
         { t = new ASTMatch(t, e1, m.image, n.image, e2); }
+    // TODO: Check if empty structs are valid
+    | <LBRA> n=<Id> <EQUAL> t=Let() {decls.add(new Bind(n.image, t));} (<COMMA> n=<Id> <EQUAL> t=Let() {decls.add(new Bind(n.image, t));})* <RBRA> {t = new ASTStruct(decls);}
     | <PRINT> t=Fact() { t = new ASTPrint(t); }
     | <PRINTLN> t=Fact() { t = new ASTPrintln(t); }
     | <LPAR> t=Let() <RPAR> 
@@ -349,7 +352,7 @@ ASTType TypeF() :
         | <REF> <LT> t=Type() <GT> { t = new ASTTRef(t); }
         | <LIST> <LT> t=Type() <GT> { t = new ASTTList(t); }
         | <STRUCT> <LBRA> ll = LabelList() <RBRA> { t = new ASTTStruct(ll); return t; }
-        | <UNION> <LSBRA> ll = LabelList() <RSBRA> { t = new ASTTUnion(ll); return t; }
+        | <UNION> <LBRA> ll = LabelList() <RBRA> { t = new ASTTUnion(ll); return t; }
         | <LPAR> t = Type() <RPAR> { return t; }
     )
     { return t; }

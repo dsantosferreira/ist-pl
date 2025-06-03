@@ -29,41 +29,41 @@ b || ~ (z < 0);;
 
 // 4
 let x = 1;
-let f = fn y => { x + y };
+let f = fn y:int => { x + y };
 (x + f (2));;
 
 // 5
 let x=1;
-let f = fn y => { y+x };
-let g = fn x => { x+f(x) };
+let f = fn y:int => { y+x };
+let g = fn x:int => { x+f(x) };
 g(2);;
 
 // 14
-let f = fn g,z => { g (z) };
-f (fn z => { z*2 }) (7);;
+let f = fn g:int->int,z:int => { g (z) };
+f (fn z:int => { z*2 }) (7);;
 
 // 49
-(fn z => { fn t => { z*t }}) (7) (7);;
+(fn z:int => { fn t:int => { z*t }}) (7) (7);;
 
 
 // 49
-(fn z,t => { z*t }) (7) (7);;
+(fn z:int,t:int => { z*t }) (7) (7);;
 
 // 14
 let x=1;
-let f = fn y => { let k = x*2; y+x*k };
-let g = fn x, u => { u(x) + f(x) };
+let f = fn y:int => { let k = x*2; y+x*k };
+let g = fn x:int, u:int->int => { u(x) + f(x) };
 g (f(3)) (f);;
 
 // 199
-let comp = fn f, f => { fn x => { f (g (x)) }};
-let inc = fn x => { x + 1};
-let dup = fn x => { 2 * x};
+let comp = fn f:int->int, g:int->int => { fn x:int -> { f (g (x)) }};
+let inc = fn x:int => { x + 1};
+let dup = fn x:int => { 2 * x};
 let c2 = comp (inc) (dup);
 c2 (99);;
 
 // 6
-let f = fn l => {match l { nil => 0 | h::t => h + f(t)} }; f(1::2::3::nil);;
+let f = fn l:list<int> => {match l { nil -> 0 | h::t -> h + f(t)} }; f(1::2::3::nil);;
 
 let fibo = fn a, b => { a:?fibo(b)(a+b) };
 let fibogen = fibo(0)(1);

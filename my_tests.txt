@@ -248,8 +248,8 @@ let v = true || 2; v;;
 let v = ~1; v;;
 
 // Expected reference in left hand side of assignment operation
-let a = box(0); !a := 1;
-let a = box(0); 1 := 1;
+let a = box(0); !a := 1;;
+let a = box(0); 1 := 1;;
 
 // Expected reference in dereference operation
 let a = 0; !a;;

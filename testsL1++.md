@@ -8,7 +8,7 @@ match l {
 };;
 
 // 3
-let len = fn l =>
+let len = fn l:list<int> =>
     {   
         match l {
         nil -> 0

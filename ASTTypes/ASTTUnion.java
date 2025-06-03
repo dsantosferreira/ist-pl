@@ -2,7 +2,7 @@ package ASTTypes;
 
 public class ASTTUnion implements ASTType {
 
-    private TypeBindList ll;
+    private final TypeBindList ll;
 
     public ASTTUnion(TypeBindList llp) {
         ll = llp;
