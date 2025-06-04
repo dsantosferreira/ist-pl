@@ -1,8 +1,7 @@
 package ASTTypes;
 
 public class ASTTId implements ASTType	{
-
-    String id;	
+    String id;
     
     public ASTTId(String id)	{
         this.id = id;
@@ -11,4 +10,12 @@ public class ASTTId implements ASTType	{
         return id;
     }
 
-}	
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        return obj.getClass() == this.getClass();
+    }
+}

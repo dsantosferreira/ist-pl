@@ -20,5 +20,17 @@ public class ASTTArrow implements ASTType {
     public ASTType getCodom() {
         return codom;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass())
+            return false;
+
+        return ((ASTTArrow) obj).getDom().equals(this.dom) && ((ASTTArrow) obj).getCodom().equals(this.codom);
+    }
 }
 

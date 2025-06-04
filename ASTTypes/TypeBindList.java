@@ -5,13 +5,13 @@ import errors.TypeCheckError;
 import java.util.*;
 
 public class TypeBindList  {
-    private HashMap<String,ASTType> lbl;
+    private final HashMap<String,ASTType> lbl;
 
     public TypeBindList(HashMap<String,ASTType> ll) {
         lbl = ll;
     }
 
-    private boolean containsKey(String id) {
+    public boolean containsKey(String id) {
         return lbl.containsKey(id);
     }
 
@@ -20,5 +20,13 @@ public class TypeBindList  {
             throw new TypeCheckError("Struct/Union does not contain field with identifier " + id);
 
         return lbl.get(id);
+    }
+
+    public int length() {
+        return lbl.size();
+    }
+
+    public Set<String> getKeySet() {
+        return lbl.keySet();
     }
 }

@@ -36,11 +36,11 @@ public class ASTAssign implements ASTNode {
         if (lType instanceof ASTTRef lRef) {
             ASTType rType = r.typecheck(e);
 
-            if (lRef.getType().getClass().equals(rType.getClass())) {
+            if (lRef.getType().equals(rType)) {
                 return lRef.getType();
             } else
-                throw new TypeCheckError("Tried to assign value of type " + rType.toStr() + " to variable of type " + lType.toStr());
+                throw new TypeCheckError("Tried to assign value of type " + rType.toStr() + " to variable of type " + lRef.getType().toStr());
         } else
-            throw new TypeCheckError("Illegal type for left hand side of assignemnt operation: " + lType.toStr());
+            throw new TypeCheckError("Illegal type for left hand side of assignment operation: " + lType.toStr());
     }
 }

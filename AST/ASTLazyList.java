@@ -28,7 +28,8 @@ public class ASTLazyList implements ASTNode {
         ASTType tailType = tail.typecheck(e);
 
         if (tailType instanceof ASTTList tailList) {
-            if ((headType.getClass().equals(tailList.getElt().getClass())) || tailList.getElt() instanceof ASTTUnit)
+            // TODO: same thing as ASTList
+            if ((headType.equals(tailList.getElt())) || tailList.getElt() instanceof ASTTUnit)
                 return new ASTTList(headType);
             else
                 throw new TypeCheckError("Type of head of list must match the tail of its tail. Got head with type " + headType.toStr() + " and tail of type " + tailType.toStr());

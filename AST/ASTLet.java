@@ -10,11 +10,13 @@ import values.IValue;
 import java.util.List;
 
 public class ASTLet implements ASTNode {
-    List<Bind> decls;
-    ASTNode body;
+    private final List<Bind> decls;
+    private final List<ASTType> types;
+    private final ASTNode body;
 
-    public ASTLet(List<Bind> decls, ASTNode b) {
+    public ASTLet(List<Bind> decls, List<ASTType> types, ASTNode b) {
         this.decls = decls;
+        this.types = types;
         this.body = b;
     }
 
@@ -32,8 +34,16 @@ public class ASTLet implements ASTNode {
     public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
         Environment<ASTType> newEnv = e.beginScope();
 
-        for (Bind bind: decls) {
-            newEnv.assoc(bind.getId(), bind.getExp().typecheck(newEnv));
+        for (int i = 0; i < decls.size(); i++) {
+            if (types.get(i) != null) {
+                newEnv.assoc(decls.get(i).getId(), types.get(i));
+                ASTType expType = decls.get(i).getExp().typecheck(newEnv);
+
+                if (!types.get(i).equals(expType))
+                    throw new TypeCheckError("Type annotation in variable does not match expression type. Got " + types.get(i).toStr() + " and " + expType.toStr());
+            } else {
+                newEnv.assoc(decls.get(i).getId(), decls.get(i).getExp().typecheck(newEnv));
+            }
         }
 
         return body.typecheck(newEnv);

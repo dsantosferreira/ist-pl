@@ -14,4 +14,15 @@ public class ASTTRef implements ASTType {
         return "ref<"+type.toStr()+">";
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass())
+            return false;
+
+        return ((ASTTRef) obj).getType().equals(this.type);
+    }
 }

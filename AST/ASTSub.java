@@ -37,7 +37,7 @@ public class ASTSub implements ASTNode {
 			ASTType t2 = rhs.typecheck(e);
 
 			if (t2 instanceof ASTTInt)
-				return new ASTTBool();
+				return t1;
 			else
 				throw new TypeCheckError("Illegal type for second operand in subtraction operation " + t2.toStr());
 		} else

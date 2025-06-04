@@ -39,7 +39,7 @@ public class ASTIf implements ASTNode {
             ASTType tType = btrue.typecheck(e);
             ASTType fType = bfalse.typecheck(e);
 
-            if (tType.getClass().equals(fType.getClass()))
+            if (tType.equals(fType))
                 return tType;
             else
                 throw new TypeCheckError("Types of true and false branch of is statement must match. Got: " + tType.toStr() + " and " + fType.toStr());

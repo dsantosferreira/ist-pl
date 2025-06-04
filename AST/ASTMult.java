@@ -39,7 +39,7 @@ public class ASTMult implements ASTNode {
             ASTType t2 = rhs.typecheck(e);
 
             if (t2 instanceof ASTTInt)
-                return new ASTTInt();
+                return t1;
             else
                 throw new TypeCheckError("Illegal type for second operand in multiplication operation " + t2.toStr());
         } else

@@ -17,7 +17,7 @@ let b = 2;
 if a > b {0} else {1};;
 
 // 2
-let f = fn x, y => {if (x == 1) {f(2)(2)} else {0}; x + y};
+let f:int->int->bool = fn x:int, y:int => {if (x == 1) {f(2)(2)} else {false}; x + y};
 f(1)(1);;
 
 // Simple while tests
@@ -45,12 +45,12 @@ println(a);
 b;;
 
 // lambda@(...)\nlambda@(...)
-let f = fn x => {x};
+let f = fn x:bool => {x};
 println(f);;
 
 // Simple assignment/box/dereferences tests
 // 6
-let fact = fn n => { let c = box (n);
+let fact = fn n:int => { let c = box (n);
     let f = box (1);
     while (!c > 0) {
         f := !f * !c;
@@ -62,7 +62,7 @@ fact (3);;
 
 // 3
 let c = box(0);
-let tick = fn inc => { let v = !c; c := !c + inc; v };
+let tick = fn inc:int => { let v = !c; c := !c + inc; v };
 tick(1);
 tick(1);
 tick(1);
@@ -70,20 +70,21 @@ tick(1);;
 
 // 5
 let a = box(0);
-let f = fn b => {let c = b; a := c};
+let f = fn b:int => {let c = b; a := c};
 f(5);
 !a;;
 
+// TODO: Check if this should work!
 // This test shows that updated storage survives inner scope of function, even if the variable "c" does not exist anymore
 // 5
 let a = box(0);
-let f = fn b => {let c = box(5); a := c};
+let f = fn b:int => {let c = box(5); a := c};
 f(5);
 !!a;;
 
 // 10
 let a = box(0);
-let f = fn b => {let c = box(b); a := c};
+let f = fn b:int => {let c = box(b); a := c};
 f(5); !a := 10;
 !!a;;
 
@@ -95,7 +96,7 @@ v := 6;
 
 // Simple currying test
 // 6
-let f = fn a, b, c => {a + b + c}; let g = f(1); let h = g(2); h(3);;
+let f = fn a:int, b:int, c:int => {a + b + c}; let g = f(1); let h = g(2); h(3);;
 
 // Simple collatz sequence
 // 1
@@ -106,7 +107,7 @@ while !x ~= 1 {
 !x;;
 
 // 1
-let collatz = fn x => {
+let collatz:int->int = fn x:int => {
     if x == 1 {x} else {
         if x / 2 * 2 == x {collatz (x/2)} else {collatz(3*x + 1)}
     }
@@ -115,7 +116,7 @@ collatz(3);;
 
 // Tests with static lists
 // 1::2::3::4::nil
-let concat = fn l, r => {
+let concat:list<int> -> list<int> -> list<int> = fn l:list<int>, r:list<int> => {
     match l {
         nil -> r |
         x::t -> x::(concat (t) (r))
@@ -124,13 +125,13 @@ let concat = fn l, r => {
 concat (1::2::nil) (3::4::nil);;
 
 // 3::2::1::nil
-let concat = fn l, r => {
+let concat:list<int> -> list<int> -> list<int> = fn l:list<int>, r:list<int> => {
     match l {
         nil -> r |
         x::t -> x::(concat (t) (r))
     }
 };
-let reverse = fn l => {
+let reverse:list<int> -> list<int> = fn l:list<int> => {
     match l {
         nil -> nil |
         x::t -> concat (reverse (t)) (x::nil)

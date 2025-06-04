@@ -43,7 +43,7 @@ public class ASTMatch implements ASTNode {
         }
     }
 
-    // TODO: need to handle case where list is totally empty
+    // TODO: need to handle case where list is totally empty. Empty list should have the most generic type possible!
     @Override
     public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
         ASTType listType = list.typecheck(e);
@@ -57,7 +57,7 @@ public class ASTMatch implements ASTNode {
 
             ASTType listExprType = listExpr.typecheck(newEnv);
 
-            if (nilType.getClass().equals(listExprType.getClass()))
+            if (nilType.equals(listExprType))
                 return nilType;
             else
                 throw new TypeCheckError("Types of both cases of match construct must be the same. Got: " + nilType.toStr() + " and " + listExprType.toStr());
