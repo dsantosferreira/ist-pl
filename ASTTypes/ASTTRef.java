@@ -1,5 +1,7 @@
 package ASTTypes;
 
+import errors.IncompatibleTypes;
+
 public class ASTTRef implements ASTType {
     private final ASTType type;
 
@@ -12,6 +14,19 @@ public class ASTTRef implements ASTType {
     }
     public String toStr() {
         return "ref<"+type.toStr()+">";
+    }
+
+    @Override
+    public boolean isSubtypeOf(ASTType other) {
+        if (!(other instanceof ASTTRef otherT))
+            return false;
+
+        return otherT.getType().isSubtypeOf(this.type) && this.type.isSubtypeOf(otherT.getType());
+    }
+
+    @Override
+    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
+        return null;
     }
 
     @Override

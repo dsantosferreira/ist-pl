@@ -1,7 +1,9 @@
 package ASTTypes;
 
+import errors.IncompatibleTypes;
 import errors.TypeCheckError;
 
+import java.util.HashMap;
 import java.util.Set;
 
 public class ASTTUnion implements ASTType {
@@ -20,16 +22,44 @@ public class ASTTUnion implements ASTType {
         return ll.length();
     }
 
-    public boolean containsField(String id) {
-        return ll.containsKey(id);
-    }
-
     public Set<String> getFields() {
         return ll.getKeySet();
     }
 
+    public TypeBindList getTypeBindList() {
+        return this.ll;
+    }
+
     public String toStr() {
         return "union [ ... ]";
+    }
+
+    @Override
+    public boolean isSubtypeOf(ASTType other) {
+        if (!(other instanceof ASTTUnion otherT))
+            return false;
+
+        HashMap<String, ASTType> thistbl = this.getTypeBindList().getMap();
+        HashMap<String, ASTType> othertbl = otherT.getTypeBindList().getMap();
+        for (HashMap.Entry<String, ASTType> thisEntry: thistbl.entrySet()) {
+            String thisFieldName = thisEntry.getKey();
+            if (!othertbl.containsKey(thisFieldName))
+                return false;
+
+            if (!thisEntry.getValue().isSubtypeOf(othertbl.get(thisFieldName)))
+                return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
+        if (this.isSubtypeOf(other))
+            return other;
+        else if (other.isSubtypeOf(this))
+            return this;
+        throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
     }
 
     @Override

@@ -1,5 +1,7 @@
 package ASTTypes;
 
+import errors.IncompatibleTypes;
+
 public class ASTTId implements ASTType	{
     String id;
     
@@ -8,6 +10,16 @@ public class ASTTId implements ASTType	{
     }
     public String toStr() {
         return id;
+    }
+
+    @Override
+    public boolean isSubtypeOf(ASTType other) {
+        return false;
+    }
+
+    @Override
+    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
+        return null;
     }
 
     @Override

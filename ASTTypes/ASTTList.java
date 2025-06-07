@@ -1,5 +1,7 @@
 package ASTTypes;
 
+import errors.IncompatibleTypes;
+
 public class ASTTList implements ASTType {
     private final ASTType elt;
 
@@ -10,6 +12,23 @@ public class ASTTList implements ASTType {
     
     public String toStr() {
         return "list<"+elt.toStr()+">";
+    }
+
+    @Override
+    public boolean isSubtypeOf(ASTType other) {
+        if (!(other instanceof ASTTList otherT))
+            return false;
+
+        return this.elt.isSubtypeOf(otherT.getElt());
+    }
+
+    @Override
+    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
+        if (this.isSubtypeOf(other))
+            return other;
+        else if (other.isSubtypeOf(this))
+            return this;
+        throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
     }
 
     public ASTType getElt() {

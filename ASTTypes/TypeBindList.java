@@ -11,6 +11,10 @@ public class TypeBindList  {
         lbl = ll;
     }
 
+    public HashMap<String, ASTType> getMap() {
+        return this.lbl;
+    }
+
     public boolean containsKey(String id) {
         return lbl.containsKey(id);
     }

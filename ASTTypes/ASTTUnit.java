@@ -1,10 +1,26 @@
 package ASTTypes;
 
+import AST.ASTNode;
+import errors.IncompatibleTypes;
+
 public class ASTTUnit implements ASTType {
     public ASTTUnit() {}
 
     public String toStr() {
         return "()";
+    }
+
+    // TODO: Think about this
+    @Override
+    public boolean isSubtypeOf(ASTType other) {
+        return other instanceof ASTTUnit;
+    }
+
+    @Override
+    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
+        if (!this.isSubtypeOf(other))
+            throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
+        return this;
     }
 
     @Override

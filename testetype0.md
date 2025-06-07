@@ -187,4 +187,9 @@ let om: (int -> int)->int = fn f:int->int => { f (k)};
 om (fn k:int => {k*k})
 ;;
 
+let f = fn s:struct{x: int, y: bool} => {
+    println("x: " + s.x);
+    println("y: " + s.y)
+};
 
+f({x = 1, y = true, z = 2});;

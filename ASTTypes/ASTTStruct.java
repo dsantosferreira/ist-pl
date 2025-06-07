@@ -1,6 +1,9 @@
 package ASTTypes;
 
+import errors.IncompatibleTypes;
 import errors.TypeCheckError;
+
+import java.util.HashMap;
 
 public class ASTTStruct implements ASTType {
     private final TypeBindList ll;
@@ -12,9 +15,41 @@ public class ASTTStruct implements ASTType {
     public ASTType getType(String id) throws TypeCheckError {
         return ll.getType(id);
     }
+
+    public TypeBindList getTypeBindList() {
+        return this.ll;
+    }
     
     public String toStr() {
         return "struct { ... }";
+    }
+
+    @Override
+    public boolean isSubtypeOf(ASTType other) {
+        if (!(other instanceof ASTTStruct otherT))
+            return false;
+
+        HashMap<String, ASTType> thistbl = this.getTypeBindList().getMap();
+        HashMap<String, ASTType> othertbl = otherT.getTypeBindList().getMap();
+        for (HashMap.Entry<String, ASTType> otherEntry: othertbl.entrySet()) {
+            String otherFieldName = otherEntry.getKey();
+            if (!thistbl.containsKey(otherFieldName))
+                return false;
+
+            if (!thistbl.get(otherFieldName).isSubtypeOf(otherEntry.getValue()))
+                return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
+        if (this.isSubtypeOf(other))
+            return other;
+        else if (other.isSubtypeOf(this))
+            return this;
+        throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
     }
 
     @Override

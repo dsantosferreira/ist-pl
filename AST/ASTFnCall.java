@@ -36,7 +36,7 @@ public class ASTFnCall implements ASTNode {
         ASTType funcType = func.typecheck(e);
 
         if (funcType instanceof ASTTArrow funcArrow) {
-            if (argType.equals(funcArrow.getDom()))
+            if (argType.isSubtypeOf(funcArrow.getDom()))
                 return funcArrow.getCodom();
             else
                 throw new TypeCheckError("Expected an argument of type " + funcArrow.getDom().toStr() + " to apply to function. Got " + argType.toStr());

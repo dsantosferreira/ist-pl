@@ -282,12 +282,12 @@ ASTNode Term() :
 
 ASTNode Fact() :
 { Token m, n;
-  ASTNode t = null, e1, e2;
+  ASTNode t, e1, e2;
   ASTType type;
   List<String> vars = new ArrayList<>();
   List<ASTType> types = new ArrayList<>();
   List<Bind> decls = new ArrayList<>();
-  Map<String, List<Pair<String, ASTNode>>> unionCases = new HashMap<>();
+  List<UnionCase> unionCases = new ArrayList<>();
   ASTNode body, alt;
 }
 {
@@ -297,7 +297,7 @@ ASTNode Fact() :
     | n=<FALSE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | <NIL> { t = new ASTNil(); }
     | n=<String> { t = new ASTString(n.image); }
-    | n=<Id> (<LSPAR> t=Let() <RSPAR> {t = new ASTVariant(n.image, t);})? { if (t == null) t = new ASTId(n.image); }
+    | n=<Id> { t = new ASTId(n.image); }
     | <BOX> t=Fact() { t = new ASTBox(t); }
     | <DEREF> t=Fact() { t = new ASTDeref(t); }
     | <MINUS> t=Fact() { t = new ASTNeg(t); }
@@ -317,7 +317,7 @@ ASTNode Fact() :
             (
                 <NIL> <SARROW> e1 = Let() <MATCHSEP> m=<Id> <LISTSEP> n=<Id> <SARROW> e2 = Let() <RBRA> { t = new ASTMatch(t, e1, m.image, n.image, e2); }
                 |
-                <NSIGN> n=<Id> <LPAR> m=<Id> <RPAR> <SARROW> e2=Let() { if (!unionCases.containsKey(n.image)) unionCases.put(n.image, new ArrayList<>()); unionCases.get(n.image).add(new Pair<>(m.image, e2)); } (<MATCHSEP> <NSIGN> n=<Id> <LPAR> m=<Id> <RPAR> <SARROW> e2=Let() { if (!unionCases.containsKey(n.image)) unionCases.put(n.image, new ArrayList<>()); unionCases.get(n.image).add(new Pair<>(m.image, e2)); } )* <RBRA> { t = new ASTUnionMatch(t, unionCases); }
+                <NSIGN> n=<Id> <LPAR> m=<Id> <RPAR> <SARROW> e2=Let() { unionCases.add(new UnionCase(n.image, m.image, e2)); } (<MATCHSEP> <NSIGN> n=<Id> <LPAR> m=<Id> <RPAR> <SARROW> e2=Let() { unionCases.add(new UnionCase(n.image, m.image, e2)); } )* <RBRA> { t = new ASTUnionMatch(t, unionCases); }
             )
     // TODO: Check if empty structs are valid
     | <LBRA> n=<Id> <EQUAL> t=Let() {decls.add(new Bind(n.image, t));} (<COMMA> n=<Id> <EQUAL> t=Let() {decls.add(new Bind(n.image, t));})* <RBRA> {t = new ASTStruct(decls);}
