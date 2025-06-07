@@ -39,7 +39,7 @@ public class ASTFnCall implements ASTNode {
             if (argType.equals(funcArrow.getDom()))
                 return funcArrow.getCodom();
             else
-                throw new TypeCheckError("Expected an argument of type " + funcArrow.getDom().toStr() + " to apply to function");
+                throw new TypeCheckError("Expected an argument of type " + funcArrow.getDom().toStr() + " to apply to function. Got " + argType.toStr());
         } else
             throw new TypeCheckError("Expected a function to apply to argument of type " + argType.toStr());
     }

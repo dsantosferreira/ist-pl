@@ -2,12 +2,14 @@ package AST;
 
 import ASTTypes.ASTTBool;
 import ASTTypes.ASTTInt;
+import ASTTypes.ASTTString;
 import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
 import errors.TypeCheckError;
 import values.IValue;
 import values.VInt;
+import values.VString;
 
 public class ASTPlus implements ASTNode {
     ASTNode lhs, rhs;
@@ -19,8 +21,12 @@ public class ASTPlus implements ASTNode {
 
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         IValue v1 = lhs.eval(e);
+        IValue v2 = rhs.eval(e);
+
+        if (v1 instanceof VString || v2 instanceof VString)
+            return new VString(v1.toStr() + v2.toStr());
+
         if (v1 instanceof VInt) {
-                IValue v2 = rhs.eval(e);
                 if(v2 instanceof VInt) {
                         int i1 = ((VInt) v1).getVal();
                         int i2 = ((VInt) v2).getVal();
@@ -34,9 +40,12 @@ public class ASTPlus implements ASTNode {
     @Override
     public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
         ASTType t1 = lhs.typecheck(e);
+        ASTType t2 = rhs.typecheck(e);
+
+        if (t1 instanceof ASTTString || t2 instanceof  ASTTString)
+            return new ASTTString();
 
         if (t1 instanceof ASTTInt) {
-            ASTType t2 = rhs.typecheck(e);
 
             if (t2 instanceof ASTTInt)
                 return t1;

@@ -61,6 +61,8 @@ TOKEN :
   |
   < SEMIC : ";" >
   |
+  < QUOTE : "'" >
+  |
   < TERM : ";;" >
   |
   < COMMA : "," >
@@ -294,6 +296,7 @@ ASTNode Fact() :
     | n=<TRUE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<FALSE> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | <NIL> { t = new ASTNil(); }
+    | n=<String> { t = new ASTString(n.image); }
     | n=<Id> (<LSPAR> t=Let() <RSPAR> {t = new ASTVariant(n.image, t);})? { if (t == null) t = new ASTId(n.image); }
     | <BOX> t=Fact() { t = new ASTBox(t); }
     | <DEREF> t=Fact() { t = new ASTDeref(t); }
