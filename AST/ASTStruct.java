@@ -25,6 +25,8 @@ public class ASTStruct implements ASTNode {
         HashMap<String, IValue> structVals = new HashMap<>();
 
         for (Bind decl: decls) {
+            if (structVals.containsKey(decl.getId()))
+                throw new InterpreterError("Struct contains a duplicate field: " + decl.getId());
             structVals.put(decl.getId(), decl.getExp().eval(e));
         }
 
@@ -36,6 +38,8 @@ public class ASTStruct implements ASTNode {
         HashMap<String, ASTType> typeBinds = new HashMap<>();
 
         for (Bind decl: decls) {
+            if (typeBinds.containsKey(decl.getId()))
+                throw new TypeCheckError("Struct contains a duplicate field: " + decl.getId());
             typeBinds.put(decl.getId(), decl.getExp().typecheck(e));
         }
 

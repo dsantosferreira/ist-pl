@@ -1,6 +1,5 @@
 package ASTTypes;
 
-import AST.ASTBool;
 import errors.IncompatibleTypes;
 
 public class ASTTBool implements ASTType {
