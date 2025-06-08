@@ -4,6 +4,7 @@ import errors.IncompatibleTypes;
 import errors.TypeCheckError;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class ASTTUnion implements ASTType {
@@ -31,7 +32,17 @@ public class ASTTUnion implements ASTType {
     }
 
     public String toStr() {
-        return "union [ ... ]";
+        StringBuilder str = new StringBuilder("union [ ");
+        HashMap<String, ASTType> typebl = this.ll.getMap();
+
+        for (Map.Entry<String, ASTType> entry: typebl.entrySet()) {
+            str.append(entry.getKey()).append(":").append(entry.getValue().toStr()).append(", ");
+        }
+
+        str.delete(str.length()-2, str.length());
+        str.append(" ]");
+
+        return str.toString();
     }
 
     @Override

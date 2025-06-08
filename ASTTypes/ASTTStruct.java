@@ -4,6 +4,7 @@ import errors.IncompatibleTypes;
 import errors.TypeCheckError;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ASTTStruct implements ASTType {
     private final TypeBindList ll;
@@ -21,7 +22,17 @@ public class ASTTStruct implements ASTType {
     }
     
     public String toStr() {
-        return "struct { ... }";
+        StringBuilder str = new StringBuilder("struct { ");
+        HashMap<String, ASTType> typebl = this.ll.getMap();
+
+        for (Map.Entry<String, ASTType> entry: typebl.entrySet()) {
+            str.append(entry.getKey()).append(":").append(entry.getValue().toStr()).append(", ");
+        }
+
+        str.delete(str.length()-2, str.length());
+        str.append(" }");
+
+        return str.toString();
     }
 
     @Override
