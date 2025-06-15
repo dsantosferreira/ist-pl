@@ -31,11 +31,11 @@ public class ASTOr implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType t1 = exp1.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType t1 = exp1.typecheck(valTypes, idTypes);
 
         if (t1 instanceof ASTTBool) {
-            ASTType t2 = exp2.typecheck(e);
+            ASTType t2 = exp2.typecheck(valTypes, idTypes);
 
             if (t2 instanceof ASTTBool)
                 return t1;

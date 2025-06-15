@@ -33,11 +33,11 @@ public class ASTWhile implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType condType = test.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType condType = test.typecheck(valTypes, idTypes);
 
         if (condType instanceof ASTTBool) {
-            return body.typecheck(e);
+            return body.typecheck(valTypes, idTypes);
         } else
             throw new TypeCheckError("Invalid type for while statement condition: " + condType.toStr());
     }

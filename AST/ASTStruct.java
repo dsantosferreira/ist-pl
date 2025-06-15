@@ -34,13 +34,13 @@ public class ASTStruct implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
         HashMap<String, ASTType> typeBinds = new HashMap<>();
 
         for (Bind decl: decls) {
             if (typeBinds.containsKey(decl.getId()))
                 throw new TypeCheckError("Struct contains a duplicate field: " + decl.getId());
-            typeBinds.put(decl.getId(), decl.getExp().typecheck(e));
+            typeBinds.put(decl.getId(), decl.getExp().typecheck(valTypes, idTypes));
         }
 
         return new ASTTStruct(new TypeBindList(typeBinds));

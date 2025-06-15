@@ -21,7 +21,7 @@ public class ASTString implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
         return new ASTTString();
     }
 }

@@ -319,7 +319,6 @@ ASTNode Fact() :
                 |
                 <NSIGN> n=<Id> <LPAR> m=<Id> <RPAR> <SARROW> e2=Let() { unionCases.add(new UnionCase(n.image, m.image, e2)); } (<MATCHSEP> <NSIGN> n=<Id> <LPAR> m=<Id> <RPAR> <SARROW> e2=Let() { unionCases.add(new UnionCase(n.image, m.image, e2)); } )* <RBRA> { t = new ASTUnionMatch(t, unionCases); }
             )
-    // TODO: Check if empty structs are valid
     | <LBRA> n=<Id> <EQUAL> t=Let() {decls.add(new Bind(n.image, t));} (<COMMA> n=<Id> <EQUAL> t=Let() {decls.add(new Bind(n.image, t));})* <RBRA> {t = new ASTStruct(decls);}
     | <NSIGN> n=<Id> <LPAR> t=Let() <RPAR> { t = new ASTVariant(n.image, t); }
     | <PRINT> t=Fact() { t = new ASTPrint(t); }
@@ -345,7 +344,6 @@ TypeBindList LabelList() :
   Token n;
 }
 {   { ll = new HashMap<String,ASTType>() ; }
-    // TODO: Why is this optional?
     ( n=<Id>  <COLON> t = Type() { ll.put(n.image,t); }
               (<COMMA> n=<Id> <COLON> t = Type() { ll.put(n.image,t);} )*
     )?

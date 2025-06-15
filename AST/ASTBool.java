@@ -20,7 +20,7 @@ public class ASTBool implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
         return new ASTTBool();
     }
 }

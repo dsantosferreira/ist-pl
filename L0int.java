@@ -26,8 +26,8 @@ public class L0int {
 				Parser parser = new Parser(new ByteArrayInputStream(code.getBytes()));
 				exp = parser.Start();
 				if (exp != null) {
-					exp.typecheck(new Environment<ASTType>());
-					IValue v = exp.eval(new Environment<IValue>());
+					exp.typecheck(new Environment<>(), new Environment<>());
+					IValue v = exp.eval(new Environment<>());
 					System.out.println(v.toStr());
 				}
 				System.exit(0);
@@ -52,7 +52,7 @@ public class L0int {
 					exp = parser.Start();
 					if (exp==null) System.exit(0);
 					try {
-						exp.typecheck(new Environment<ASTType>());
+						exp.typecheck(new Environment<ASTType>(), new Environment<>());
 						IValue v = exp.eval(new Environment<IValue>());
 						System.out.println(v.toStr());
 					} catch (InterpreterError | TypeCheckError e) {

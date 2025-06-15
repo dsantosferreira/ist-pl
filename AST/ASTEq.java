@@ -37,16 +37,16 @@ public class ASTEq implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType t1 = exp1.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType t1 = exp1.typecheck(valTypes, idTypes);
 
         if (t1 instanceof ASTTInt) {
-            ASTType t2 = exp2.typecheck(e);
+            ASTType t2 = exp2.typecheck(valTypes, idTypes);
             if (t2 instanceof ASTTInt)
                 return new ASTTBool();
             throw new TypeCheckError("Illegal type of second operand in equality between two integers: " + t2.toStr());
         } else if (t1 instanceof ASTTBool) {
-            ASTType t2 = exp2.typecheck(e);
+            ASTType t2 = exp2.typecheck(valTypes, idTypes);
             if (t2 instanceof ASTTBool)
                 return t1;
             throw new TypeCheckError("Illegal type of second operand in equality between two boolean values: " + t2.toStr());

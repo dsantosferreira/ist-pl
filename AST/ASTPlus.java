@@ -38,15 +38,14 @@ public class ASTPlus implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType t1 = lhs.typecheck(e);
-        ASTType t2 = rhs.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType t1 = lhs.typecheck(valTypes, idTypes);
+        ASTType t2 = rhs.typecheck(valTypes, idTypes);
 
         if (t1 instanceof ASTTString || t2 instanceof  ASTTString)
             return new ASTTString();
 
         if (t1 instanceof ASTTInt) {
-
             if (t2 instanceof ASTTInt)
                 return t1;
             else

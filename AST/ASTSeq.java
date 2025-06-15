@@ -21,8 +21,8 @@ public class ASTSeq implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        s1.typecheck(e);
-        return s2.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        s1.typecheck(valTypes, idTypes);
+        return s2.typecheck(valTypes, idTypes);
     }
 }

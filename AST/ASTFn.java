@@ -1,6 +1,7 @@
 package AST;
 
 import ASTTypes.ASTTArrow;
+import ASTTypes.ASTTId;
 import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
@@ -25,9 +26,13 @@ public class ASTFn implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        Environment<ASTType> newEnv = e.beginScope();
-        newEnv.assoc(var, varType);
-        return new ASTTArrow(varType, body.typecheck(newEnv));
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        Environment<ASTType> newValTypesEnv = valTypes.beginScope();
+        Environment<ASTType> newIdTypesEnv = idTypes.beginScope();
+
+        ASTType realType = varType.reduce(idTypes);
+
+        newValTypesEnv.assoc(var, realType);
+        return new ASTTArrow(realType, body.typecheck(newValTypesEnv, newIdTypesEnv));
     }
 }

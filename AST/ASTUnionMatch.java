@@ -2,7 +2,6 @@ package AST;
 
 import ASTTypes.ASTTUnion;
 import ASTTypes.ASTType;
-import Utils.Pair;
 import environment.Environment;
 import errors.InterpreterError;
 import errors.TypeCheckError;
@@ -46,8 +45,8 @@ public class ASTUnionMatch implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType paramT = param.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType paramT = param.typecheck(valTypes, idTypes);
 
         if (paramT instanceof ASTTUnion paramUnion) {
             Set<String> paramFields = paramUnion.getFields();
@@ -70,9 +69,9 @@ public class ASTUnionMatch implements ASTNode {
             for (String field: paramFields) {
                 UnionCase entry = caseMap.get(field);
 
-                Environment<ASTType> newEnv = e.beginScope();
-                newEnv.assoc(entry.getId(), paramUnion.getType(field));
-                ASTType currCaseType = entry.getExpr().typecheck(newEnv);
+                Environment<ASTType> newValTypesEnv = valTypes.beginScope();
+                newValTypesEnv.assoc(entry.getId(), paramUnion.getType(field));
+                ASTType currCaseType = entry.getExpr().typecheck(newValTypesEnv, idTypes);
 
                 // TODO: Change with subtyping!
                 if (lastCaseType != null && !currCaseType.equals(lastCaseType))

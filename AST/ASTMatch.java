@@ -45,17 +45,17 @@ public class ASTMatch implements ASTNode {
 
     // TODO: need to handle case where list is totally empty. Empty list should have the most generic type possible!
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType listType = list.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType listType = list.typecheck(valTypes, idTypes);
 
         if (listType instanceof ASTTList listT) {
-            ASTType nilType = nilExpr.typecheck(e);
+            ASTType nilType = nilExpr.typecheck(valTypes, idTypes);
 
-            Environment<ASTType> newEnv = e.beginScope();
-            newEnv.assoc(id1, listT.getElt());
-            newEnv.assoc(id2, listT);
+            Environment<ASTType> newValTypesEnv = valTypes.beginScope();
+            newValTypesEnv.assoc(id1, listT.getElt());
+            newValTypesEnv.assoc(id2, listT);
 
-            ASTType listExprType = listExpr.typecheck(newEnv);
+            ASTType listExprType = listExpr.typecheck(newValTypesEnv, idTypes);
 
             if (nilType.equals(listExprType))
                 return nilType;

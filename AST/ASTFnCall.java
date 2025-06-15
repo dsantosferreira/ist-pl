@@ -31,11 +31,13 @@ public class ASTFnCall implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType argType = argument.typecheck(e);
-        ASTType funcType = func.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType argType = argument.typecheck(valTypes, idTypes);
+        ASTType funcType = func.typecheck(valTypes, idTypes);
 
         if (funcType instanceof ASTTArrow funcArrow) {
+            funcArrow = (ASTTArrow) funcArrow.reduce(idTypes);
+            argType = argType.reduce(idTypes);
             if (argType.isSubtypeOf(funcArrow.getDom()))
                 return funcArrow.getCodom();
             else

@@ -2,7 +2,6 @@ package AST;
 
 import ASTTypes.ASTTStruct;
 import ASTTypes.ASTType;
-import ASTTypes.TypeBindList;
 import environment.Environment;
 import errors.InterpreterError;
 import errors.TypeCheckError;
@@ -29,8 +28,8 @@ public class ASTDot implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType t = struct.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType t = struct.typecheck(valTypes, idTypes);
 
         if (t instanceof ASTTStruct tStruct) {
             return tStruct.getType(id);

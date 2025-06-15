@@ -1,8 +1,8 @@
 package AST;
 
 public class UnionCase {
-    private String unionType, id;
-    private ASTNode expr;
+    private final String unionType, id;
+    private final ASTNode expr;
 
     public UnionCase(String unionType, String id, ASTNode expr) {
         this.unionType = unionType;

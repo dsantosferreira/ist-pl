@@ -31,10 +31,10 @@ public class ASTDiv implements ASTNode {
     }
 
 	@Override
-	public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-		ASTType t1 = lhs.typecheck(e);
+	public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+		ASTType t1 = lhs.typecheck(valTypes, idTypes);
 		if (t1 instanceof ASTTInt) {
-			ASTType t2 = rhs.typecheck(e);
+			ASTType t2 = rhs.typecheck(valTypes, idTypes);
 			if (t2 instanceof ASTTInt) {
 				return t1;
 			}

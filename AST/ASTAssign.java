@@ -30,11 +30,11 @@ public class ASTAssign implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType lType = l.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType lType = l.typecheck(valTypes, idTypes);
 
         if (lType instanceof ASTTRef lRef) {
-            ASTType rType = r.typecheck(e);
+            ASTType rType = r.typecheck(valTypes, idTypes);
 
             if (lRef.getType().equals(rType)) {
                 return lRef.getType();

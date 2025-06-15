@@ -21,8 +21,8 @@ public class ASTBox implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType t = val.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType t = val.typecheck(valTypes, idTypes);
         return new ASTTRef(t);
     }
 }

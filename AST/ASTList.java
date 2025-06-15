@@ -25,9 +25,9 @@ public class ASTList implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType headType = head.typecheck(e);
-        ASTType tailType = tail.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType headType = head.typecheck(valTypes, idTypes);
+        ASTType tailType = tail.typecheck(valTypes, idTypes);
 
         if (tailType instanceof ASTTList tailList) {
             // TODO: Change this when doing subtyping. Always return most generic type!

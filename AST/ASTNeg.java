@@ -27,8 +27,8 @@ public class ASTNeg implements ASTNode {
     }
 
 	@Override
-	public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-		ASTType t = exp.typecheck(e);
+	public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+		ASTType t = exp.typecheck(valTypes, idTypes);
 
 		if (t instanceof ASTTInt) {
 			return t;

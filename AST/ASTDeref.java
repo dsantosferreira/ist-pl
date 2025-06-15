@@ -27,8 +27,8 @@ public class ASTDeref implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType t = var.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType t = var.typecheck(valTypes, idTypes);
 
         if (t instanceof ASTTRef tRef) {
             return tRef.getType();

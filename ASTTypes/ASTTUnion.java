@@ -1,5 +1,6 @@
 package ASTTypes;
 
+import environment.Environment;
 import errors.IncompatibleTypes;
 import errors.TypeCheckError;
 
@@ -71,6 +72,18 @@ public class ASTTUnion implements ASTType {
         else if (other.isSubtypeOf(this))
             return this;
         throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
+    }
+
+    @Override
+    public ASTType reduce(Environment<ASTType> e) {
+        HashMap<String, ASTType> newtbl = new HashMap<>();
+        HashMap<String, ASTType> typebl = this.ll.getMap();
+
+        for (Map.Entry<String, ASTType> entry: typebl.entrySet()) {
+            newtbl.put(entry.getKey(), entry.getValue().reduce(e));
+        }
+
+        return new ASTTUnion(new TypeBindList(newtbl));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ASTTypes;
 
+import environment.Environment;
 import errors.IncompatibleTypes;
 
 public class ASTTArrow implements ASTType {
@@ -30,6 +31,11 @@ public class ASTTArrow implements ASTType {
         else if (other.isSubtypeOf(this))
             return this;
         throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
+    }
+
+    @Override
+    public ASTType reduce(Environment<ASTType> e) {
+        return new ASTTArrow(dom.reduce(e), codom.reduce(e));
     }
 
     public ASTType getDom() {

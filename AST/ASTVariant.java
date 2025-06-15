@@ -26,9 +26,9 @@ public class ASTVariant implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
         HashMap<String, ASTType> typeBinds = new HashMap<>();
-        typeBinds.put(id, expr.typecheck(e));
+        typeBinds.put(id, expr.typecheck(valTypes, idTypes));
 
         return new ASTTUnion(new TypeBindList(typeBinds));
     }

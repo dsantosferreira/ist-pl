@@ -32,12 +32,12 @@ public class ASTIf implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        ASTType condType = test.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        ASTType condType = test.typecheck(valTypes, idTypes);
 
         if (condType instanceof ASTTBool) {
-            ASTType tType = btrue.typecheck(e);
-            ASTType fType = bfalse.typecheck(e);
+            ASTType tType = btrue.typecheck(valTypes, idTypes);
+            ASTType fType = bfalse.typecheck(valTypes, idTypes);
 
             if (tType.equals(fType))
                 return tType;

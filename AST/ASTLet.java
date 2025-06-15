@@ -31,21 +31,21 @@ public class ASTLet implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        Environment<ASTType> newEnv = e.beginScope();
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        Environment<ASTType> newValTypesEnv = valTypes.beginScope();
 
         for (int i = 0; i < decls.size(); i++) {
             if (types.get(i) != null) {
-                newEnv.assoc(decls.get(i).getId(), types.get(i));
-                ASTType expType = decls.get(i).getExp().typecheck(newEnv);
+                newValTypesEnv.assoc(decls.get(i).getId(), types.get(i));
+                ASTType expType = decls.get(i).getExp().typecheck(newValTypesEnv, idTypes);
 
                 if (!types.get(i).equals(expType))
                     throw new TypeCheckError("Type annotation in variable does not match expression type. Got " + types.get(i).toStr() + " and " + expType.toStr());
             } else {
-                newEnv.assoc(decls.get(i).getId(), decls.get(i).getExp().typecheck(newEnv));
+                newValTypesEnv.assoc(decls.get(i).getId(), decls.get(i).getExp().typecheck(newValTypesEnv, idTypes));
             }
         }
 
-        return body.typecheck(newEnv);
+        return body.typecheck(newValTypesEnv, idTypes);
     }
 }

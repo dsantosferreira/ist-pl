@@ -1,5 +1,7 @@
 package ASTTypes;
 
+import environment.Environment;
+import errors.EnvironmentError;
 import errors.IncompatibleTypes;
 
 public class ASTTId implements ASTType	{
@@ -20,6 +22,15 @@ public class ASTTId implements ASTType	{
     @Override
     public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
         return null;
+    }
+
+    @Override
+    public ASTType reduce(Environment<ASTType> e) throws EnvironmentError {
+        return e.find(id).reduce(e);
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override

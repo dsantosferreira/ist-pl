@@ -21,7 +21,7 @@ public class ASTPrintln implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        return var.typecheck(e);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        return var.typecheck(valTypes, idTypes);
     }
 }

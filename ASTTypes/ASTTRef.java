@@ -1,5 +1,6 @@
 package ASTTypes;
 
+import environment.Environment;
 import errors.IncompatibleTypes;
 
 public class ASTTRef implements ASTType {
@@ -27,6 +28,11 @@ public class ASTTRef implements ASTType {
     @Override
     public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
         return null;
+    }
+
+    @Override
+    public ASTType reduce(Environment<ASTType> e) {
+        return new ASTTRef(type.reduce(e));
     }
 
     @Override

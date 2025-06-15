@@ -12,17 +12,23 @@ public class ASTTypeDef implements ASTNode {
     HashMap<String, ASTType> ltd;
     ASTNode body;
 
-    public ASTTypeDef(HashMap<String,ASTType>  ltdp, ASTNode b) {
-	ltd = ltdp;
-    body = b;
+    public ASTTypeDef(HashMap<String,ASTType> ltdp, ASTNode b) {
+        ltd = ltdp;
+        body = b;
     }
     
-    public IValue eval(Environment<IValue> env) throws InterpreterError {
-        return body.eval(env);
+    public IValue eval(Environment<IValue> e) throws InterpreterError {
+        return body.eval(e);
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError {
-        return null;
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
+        Environment<ASTType> newIdTypesEnv = idTypes.beginScope();
+
+        for (Map.Entry<String, ASTType> entry: ltd.entrySet()) {
+            newIdTypesEnv.assoc(entry.getKey(), entry.getValue());
+        }
+
+        return body.typecheck(valTypes, newIdTypesEnv);
     }
 }

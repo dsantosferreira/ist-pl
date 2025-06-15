@@ -1,5 +1,6 @@
 package ASTTypes;
 
+import environment.Environment;
 import errors.IncompatibleTypes;
 
 public class ASTTList implements ASTType {
@@ -29,6 +30,11 @@ public class ASTTList implements ASTType {
         else if (other.isSubtypeOf(this))
             return this;
         throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
+    }
+
+    @Override
+    public ASTType reduce(Environment<ASTType> e) {
+        return new ASTTList(elt.reduce(e));
     }
 
     public ASTType getElt() {

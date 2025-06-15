@@ -1,5 +1,6 @@
 package ASTTypes;
 
+import environment.Environment;
 import errors.IncompatibleTypes;
 
 public class ASTTBool implements ASTType {
@@ -19,6 +20,11 @@ public class ASTTBool implements ASTType {
     public ASTType getMostGeneral(ASTType other) {
         if (!this.isSubtypeOf(other))
             throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
+        return this;
+    }
+
+    @Override
+    public ASTType reduce(Environment<ASTType> e) {
         return this;
     }
 

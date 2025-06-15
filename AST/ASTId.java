@@ -17,7 +17,7 @@ public class ASTId implements ASTNode {
     }
 
     @Override
-    public ASTType typecheck(Environment<ASTType> e) throws EnvironmentError {
-        return e.find(id);
+    public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws EnvironmentError {
+        return valTypes.find(id);
     }
 }
