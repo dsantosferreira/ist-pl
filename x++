@@ -1,4 +1,4 @@
 #!/bin/sh
 
 ./makeit.sh
-java L0int
+java L0int "$@"
