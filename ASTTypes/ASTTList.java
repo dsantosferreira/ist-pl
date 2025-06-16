@@ -1,8 +1,5 @@
 package ASTTypes;
 
-import environment.Environment;
-import errors.IncompatibleTypes;
-
 public class ASTTList implements ASTType {
     private final ASTType elt;
 

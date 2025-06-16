@@ -83,7 +83,7 @@ let a = 1; let a = 2; a;;
 let a = 1; b;;
 
 // Usage of variable out of scope
-let f = fn x => {
+let f = fn x:int => {
     let a = x;
     a
 };
@@ -112,9 +112,9 @@ let a = box(0); 1 := 1;;
 let a = 0; !a;;
 
 // Expected either two integers or two boolean values in ~= operation
-let a = 1 ~= true; a;;
-let a = true ~= 1; a;;
-let a = 1::nil ~= true; a;;
+let a = 1 != true; a;;
+let a = true != 1; a;;
+let a = 1::nil != true; a;;
 
 // Expected two integers in division operation
 let a = 1 / true; a;;
@@ -135,7 +135,7 @@ let a = true - 1; a;;
 // Expected either two integers or two booleans in equality operation
 let a = 1 == true; a;;
 let a = true == 1; a;;
-let a = 1::nil ~= true; a;;
+let a = 1::nil == true; a;;
 
 // Expected closure in left hand side of application
 let a = 1; a(1);;
@@ -164,3 +164,58 @@ let a = 1; while a {1};;
 
 // Expected either a list or nil in match operator
 let a = 1; match a {nil -> nil | x::t -> x};;
+
+// More type checking tests
+
+// Branches must have a common super type
+// Fails
+if true {1} else {false};;
+
+// Succeeds
+if true {1} else {1};;
+
+// Succeeds
+if true {{#x=1, #y=2}} else {{#x = 13}};;
+
+// Fails
+if true {{#x=1, #y=2}} else {{#x = true}};;
+
+// Succeeds
+type BigStruct = struct {#x:int, #y:int, #z:int};
+type SmallStruct = struct {#x:int, #y:int};
+(
+let f = fn t:bool => {
+    if t {{#x = 1, #y = 2, #z = 3}} else {{#x = 1, #y = 2}}
+};
+
+let a:SmallStruct = f(false);
+a
+);;
+
+// Succeeds
+type BigStruct = struct {#x:int, #y:int, #z:int};
+type SmallStruct = struct {#x:int, #y:int};
+(
+let f = fn t:bool => {
+if t {{#x = 1, #y = 2, #z = 3}} else {{#x = 1, #y = 2}}
+};
+
+let a:SmallStruct = f(true);
+a
+);;
+
+// Fails
+type BigStruct = struct {#x:int, #y:int, #z:int};
+type SmallStruct = struct {#x:int, #y:int};
+(
+let f = fn t:bool => {
+if t {{#x = 1, #y = 2, #z = 3}} else {{#x = 1, #y = 2}}
+};
+
+let a:BigStruct = f(true);
+a
+);;
+
+
+// Union Match branches must have common super type
+

@@ -1,10 +1,5 @@
 package ASTTypes;
 
-import environment.Environment;
-import errors.IncompatibleTypes;
-
-import java.util.Objects;
-
 public class ASTTUnit implements ASTType {
     public ASTTUnit() {}
 

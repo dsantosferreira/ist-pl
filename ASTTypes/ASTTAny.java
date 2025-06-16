@@ -1,8 +1,5 @@
 package ASTTypes;
 
-import environment.Environment;
-import errors.IncompatibleTypes;
-
 public class ASTTAny implements ASTType {
     @Override
     public String toStr() {

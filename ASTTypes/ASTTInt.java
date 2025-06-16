@@ -1,8 +1,5 @@
 package ASTTypes;
 
-import environment.Environment;
-import errors.IncompatibleTypes;
-
 public class ASTTInt implements ASTType {
     public String toStr() {
         return "int";

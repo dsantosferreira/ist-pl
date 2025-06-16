@@ -1,8 +1,5 @@
 package ASTTypes;
 
-import environment.Environment;
-import errors.IncompatibleTypes;
-
 public class ASTTArrow implements ASTType {
     ASTType dom;
     ASTType codom;

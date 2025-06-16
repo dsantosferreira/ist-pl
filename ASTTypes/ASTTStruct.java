@@ -1,7 +1,5 @@
 package ASTTypes;
 
-import environment.Environment;
-import errors.IncompatibleTypes;
 import errors.TypeCheckError;
 
 import java.util.HashMap;
