@@ -27,7 +27,8 @@ public class VStruct implements IValue {
             out.append(val.getKey()).append(" = ").append(val.getValue().toStr()).append(", ");
         }
 
-        out.delete(out.length()-2 ,out.length());
+        if (!structVals.isEmpty())
+            out.delete(out.length()-2 ,out.length());
         out.append(" }");
 
         return out.toString();

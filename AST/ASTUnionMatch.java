@@ -55,7 +55,6 @@ public class ASTUnionMatch implements ASTNode {
             if (this.caseNames.size() != unionCases.size())
                 throw new TypeCheckError("Match must not have more than one case for the same union field");
 
-            // TODO: When implementing subtyping update this
             if (paramUnion.numFields() > unionCases.size())
                 throw new TypeCheckError("Union type used in match argument " + paramUnion.toStr() + "has more fields than the number of cases");
 
@@ -74,10 +73,13 @@ public class ASTUnionMatch implements ASTNode {
                 ASTType currCaseType = entry.getExpr().typecheck(newValTypesEnv, idTypes);
 
                 // TODO: Change with subtyping!
-                if (lastCaseType != null && !currCaseType.equals(lastCaseType))
+                if (lastCaseType != null && (!currCaseType.isSubtypeOf(lastCaseType) || !currCaseType.isSubtypeOf(lastCaseType)))
                     throw new TypeCheckError("All cases from match construct must return the same type. Got " + lastCaseType.toStr() + " and " + currCaseType.toStr());
 
-                lastCaseType = currCaseType;
+                if (lastCaseType == null)
+                    lastCaseType = currCaseType;
+                else
+                    lastCaseType = lastCaseType.getMostGeneral(currCaseType);
             }
 
             return lastCaseType;

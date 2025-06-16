@@ -40,7 +40,8 @@ public class ASTTUnion implements ASTType {
             str.append(entry.getKey()).append(":").append(entry.getValue().toStr()).append(", ");
         }
 
-        str.delete(str.length()-2, str.length());
+        if (!typebl.isEmpty())
+            str.delete(str.length()-2, str.length());
         str.append(" ]");
 
         return str.toString();

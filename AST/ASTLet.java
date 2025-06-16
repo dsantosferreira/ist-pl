@@ -36,11 +36,12 @@ public class ASTLet implements ASTNode {
 
         for (int i = 0; i < decls.size(); i++) {
             if (types.get(i) != null) {
-                newValTypesEnv.assoc(decls.get(i).getId(), types.get(i));
+                ASTType realType = types.get(i).reduce(idTypes);
+                newValTypesEnv.assoc(decls.get(i).getId(), realType);
                 ASTType expType = decls.get(i).getExp().typecheck(newValTypesEnv, idTypes);
 
-                if (!types.get(i).equals(expType))
-                    throw new TypeCheckError("Type annotation in variable does not match expression type. Got " + types.get(i).toStr() + " and " + expType.toStr());
+                if (!expType.isSubtypeOf(realType))
+                    throw new TypeCheckError("Type of expression is not a subtype of variable type annotation. Got " + types.get(i).toStr() + " and " + expType.toStr());
             } else {
                 newValTypesEnv.assoc(decls.get(i).getId(), decls.get(i).getExp().typecheck(newValTypesEnv, idTypes));
             }
