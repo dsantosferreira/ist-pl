@@ -11,7 +11,7 @@ public class VOption implements IValue {
 
     @Override
     public String toStr() {
-        return id + "(" + expr.toStr() + ")";
+        return "#" + id + "(" + expr.toStr() + ")";
     }
 
     public String getId() {

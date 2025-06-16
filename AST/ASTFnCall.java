@@ -7,6 +7,7 @@ import errors.InterpreterError;
 import errors.TypeCheckError;
 import values.IValue;
 import values.VClosure;
+import values.VEmpty;
 
 public class ASTFnCall implements ASTNode {
     private final ASTNode func, argument;
@@ -23,7 +24,13 @@ public class ASTFnCall implements ASTNode {
         if (funcExp instanceof VClosure funcExpClosure) {
             IValue argumentExp = this.argument.eval(e);
             Environment<IValue> funcEnv = funcExpClosure.getEnv().beginScope();
-            funcEnv.assoc(funcExpClosure.getVar(), argumentExp);
+
+            if (funcExpClosure.getVar().equals("_")) {
+                if (!(argumentExp instanceof VEmpty))
+                    throw new InterpreterError("Expected an empty argument");
+            } else
+                funcEnv.assoc(funcExpClosure.getVar(), argumentExp);
+
             return funcExpClosure.getBody().eval(funcEnv);
         } else {
             throw new InterpreterError("Application operation expected a closure in the left hand side. Got " + funcExp.toStr() + " instead");

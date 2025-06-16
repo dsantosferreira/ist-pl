@@ -87,6 +87,8 @@ TOKEN :
   |
   < NOT : "~" >
   |
+  < UNDERSCORE : "_" >
+  |
   < ASSIGN : ":=" >
   |
   < BOX : "box" >
@@ -267,8 +269,9 @@ ASTNode Term() :
      		 |
      		 <DOT> <NSIGN> id=<Id>  { t1 = new ASTDot(t1, id.image); }
              |
-     		 // TODO: Can this be optional? To allow f() for example
      		 op = <LPAR> (t2 = Let())? <RPAR>  { t1 = new ASTFnCall(t1, t2); }
+     		 |
+     		 <UNIT> { t1 = new ASTFnCall(t1, new ASTEmpty()); }
         )+
         |
         (
@@ -282,7 +285,7 @@ ASTNode Term() :
 
 ASTNode Fact() :
 { Token m, n;
-  ASTNode t, e1, e2;
+  ASTNode t = null, e1, e2;
   ASTType type;
   List<String> vars = new ArrayList<>();
   List<ASTType> types = new ArrayList<>();
@@ -304,8 +307,8 @@ ASTNode Fact() :
     | <NOT> t=Fact() { t = new ASTNot(t); }
     | <IF> t=BA() <LBRA> e1=Let() <RBRA> <ELSE> <LBRA> e2=Let() <RBRA> { t = new ASTIf(t, e1, e2); }
     | <WHILE> t=BA() <LBRA> body=Let() <RBRA> { t = new ASTWhile(t, body); }
-    | <FN> n=<Id> <COLON> type=Type() { vars.add(n.image); types.add(type); }
-      	   	  (<COMMA> n = <Id> <COLON> type=Type()  { vars.add(n.image); types.add(type); })*
+    | <FN> ( n=<Id> | n=<UNDERSCORE> ) <COLON> type=Type() { vars.add(n.image); types.add(type); }
+      	   	  (<COMMA> ( n=<Id> | n=<UNDERSCORE> ) <COLON> type=Type()  { vars.add(n.image); types.add(type); })*
 		  <ARROW> <LBRA> e2 = Let() <RBRA>
       {
           t = new ASTFn(vars.getLast(), types.getLast(), e2);
@@ -317,13 +320,14 @@ ASTNode Fact() :
             (
                 <NIL> <SARROW> e1 = Let() <MATCHSEP> m=<Id> <LISTSEP> n=<Id> <SARROW> e2 = Let() <RBRA> { t = new ASTMatch(t, e1, m.image, n.image, e2); }
                 |
-                <NSIGN> n=<Id> <LPAR> m=<Id> <RPAR> <SARROW> e2=Let() { unionCases.add(new UnionCase(n.image, m.image, e2)); } (<MATCHSEP> <NSIGN> n=<Id> <LPAR> m=<Id> <RPAR> <SARROW> e2=Let() { unionCases.add(new UnionCase(n.image, m.image, e2)); } )* <RBRA> { t = new ASTUnionMatch(t, unionCases); }
+                <NSIGN> n=<Id> <LPAR> (m=<Id> | m=<UNDERSCORE>) <RPAR> <SARROW> e2=Let() { unionCases.add(new UnionCase(n.image, m.image, e2)); } (<MATCHSEP> <NSIGN> n=<Id> <LPAR> (m=<Id>|m=<UNDERSCORE>) <RPAR> <SARROW> e2=Let() { unionCases.add(new UnionCase(n.image, m.image, e2)); } )* <RBRA> { t = new ASTUnionMatch(t, unionCases); }
             )
     | <LBRA> (<NSIGN> n=<Id> <EQUAL> t=Let() {decls.add(new Bind(n.image, t));} (<COMMA> <NSIGN> n=<Id> <EQUAL> t=Let() {decls.add(new Bind(n.image, t));})*)? <RBRA> {t = new ASTStruct(decls);}
     | <NSIGN> n=<Id> <LPAR> t=Let() <RPAR> { t = new ASTVariant(n.image, t); }
     | <PRINT> t=Fact() { t = new ASTPrint(t); }
     | <PRINTLN> t=Fact() { t = new ASTPrintln(t); }
-    | <LPAR> t=Let() <RPAR> 
+    | <UNIT> { t = new ASTEmpty(); }
+    | <LPAR> t=Let() <RPAR>
     )
    { return t; }
 }

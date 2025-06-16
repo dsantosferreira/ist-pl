@@ -6,6 +6,7 @@ import environment.Environment;
 import errors.InterpreterError;
 import errors.TypeCheckError;
 import values.IValue;
+import values.VEmpty;
 import values.VOption;
 
 import java.util.*;
@@ -38,7 +39,12 @@ public class ASTUnionMatch implements ASTNode {
 
             UnionCase entry = caseMap.get(paramOption.getId());
             Environment<IValue> newEnv = e.beginScope();
-            newEnv.assoc(entry.getId(), paramOption.getExpr());
+
+            if (entry.getId().equals("_")) {
+                if (!(paramOption.getExpr() instanceof VEmpty))
+                    throw new InterpreterError("Was expecting an empty expression for unit type. Got " + paramOption.getExpr());
+            } else
+                newEnv.assoc(entry.getId(), paramOption.getExpr());
             return entry.getExpr().eval(newEnv);
         } else
             throw new InterpreterError("Expected a union option in match parameter. Got " + paramV.toStr() + " instead");
@@ -56,7 +62,7 @@ public class ASTUnionMatch implements ASTNode {
                 throw new TypeCheckError("Match must not have more than one case for the same union field");
 
             if (paramUnion.numFields() > unionCases.size())
-                throw new TypeCheckError("Union type used in match argument " + paramUnion.toStr() + "has more fields than the number of cases");
+                throw new TypeCheckError("Union type used in match argument " + paramUnion.toStr() + " has more fields than the number of cases");
 
             for (String field: paramFields) {
                 if (!caseNames.contains(field))
@@ -72,9 +78,8 @@ public class ASTUnionMatch implements ASTNode {
                 newValTypesEnv.assoc(entry.getId(), paramUnion.getType(field));
                 ASTType currCaseType = entry.getExpr().typecheck(newValTypesEnv, idTypes);
 
-                // TODO: Change error message
                 if (lastCaseType != null && (!currCaseType.isSubtypeOf(lastCaseType) || !currCaseType.isSubtypeOf(lastCaseType)))
-                    throw new TypeCheckError("All cases from match construct must return the same type. Got " + lastCaseType.toStr() + " and " + currCaseType.toStr());
+                    throw new TypeCheckError("All cases from match construct must return the same type or a super type of all the types. Got " + lastCaseType.toStr() + " and " + currCaseType.toStr());
 
                 if (lastCaseType == null)
                     lastCaseType = currCaseType;

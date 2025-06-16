@@ -1,7 +1,7 @@
 package AST;
 
 import ASTTypes.ASTTArrow;
-import ASTTypes.ASTTId;
+import ASTTypes.ASTTUnit;
 import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
@@ -32,7 +32,11 @@ public class ASTFn implements ASTNode {
 
         ASTType realType = varType.reduce(idTypes);
 
-        newValTypesEnv.assoc(var, realType);
+        if (var.equals("_")) {
+            if (!(realType instanceof ASTTUnit))
+                throw new TypeCheckError("Empty variable must have unit type");
+        } else
+            newValTypesEnv.assoc(var, realType);
         return new ASTTArrow(realType, body.typecheck(newValTypesEnv, newIdTypesEnv));
     }
 }

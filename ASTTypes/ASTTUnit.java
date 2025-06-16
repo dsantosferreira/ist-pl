@@ -10,7 +10,6 @@ public class ASTTUnit implements ASTType {
         return "()";
     }
 
-    // TODO: Think about this
     @Override
     public boolean isSubtypeOf(ASTType other) {
         return other instanceof ASTTUnit;
@@ -18,8 +17,6 @@ public class ASTTUnit implements ASTType {
 
     @Override
     public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
-        if (!this.isSubtypeOf(other))
-            throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
         return this;
     }
 
