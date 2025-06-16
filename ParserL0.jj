@@ -1,6 +1,6 @@
 PARSER_BEGIN(Parser)
 
-import AST.*;import environment.Bind;import java.util.*; import ASTTypes.*; import Utils.*;
+import AST.*;import environment.Bind;import java.util.*; import ASTTypes.*;
 
 public class Parser {
 }
