@@ -31,11 +31,16 @@ public class ASTList implements ASTNode {
 
         if (tailType instanceof ASTTList tailList) {
             // TODO: Change this when doing subtyping. Always return most generic type!
-            if ((headType.equals(tailList.getElt())) || tailList.getElt() instanceof ASTTUnit)
-                return new ASTTList(headType);
+            if ((headType.isSubtypeOf(tailList.getElt()) || tailList.getElt().isSubtypeOf(headType)))
+                return new ASTTList(headType.getMostGeneral(tailList.getElt()));
             else
                 throw new TypeCheckError("Type of head of list must match the type of its tail. Got head with type " + headType.toStr() + " and tail of type " + tailType.toStr());
         } else
             throw new TypeCheckError("Tail of a list must be a list. Got " + tailType.toStr());
     }
 }
+
+/*
+if ((headType.isSubtypeOf(tailList.getElt()) || tailList.getElt().isSubtypeOf(headType)))
+                return new ASTTList(headType.getMostGeneral(tailList.getElt()));
+ */

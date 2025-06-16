@@ -558,5 +558,8 @@ area(r1)
 
 let a:union{#rect:int, #circle:int} = #rect(1);
 match a {
-#rect(x) -> {#b = x} | #circle(x) -> {#b = x, #c = 1}
+#rect(x) -> x | #circle(x) -> true
 };;
+
+let a = {#x = 1}:?{#x = 3, #y = 4}:?nil;
+a;;

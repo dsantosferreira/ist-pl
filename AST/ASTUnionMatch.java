@@ -72,7 +72,7 @@ public class ASTUnionMatch implements ASTNode {
                 newValTypesEnv.assoc(entry.getId(), paramUnion.getType(field));
                 ASTType currCaseType = entry.getExpr().typecheck(newValTypesEnv, idTypes);
 
-                // TODO: Change with subtyping!
+                // TODO: Change error message
                 if (lastCaseType != null && (!currCaseType.isSubtypeOf(lastCaseType) || !currCaseType.isSubtypeOf(lastCaseType)))
                     throw new TypeCheckError("All cases from match construct must return the same type. Got " + lastCaseType.toStr() + " and " + currCaseType.toStr());
 

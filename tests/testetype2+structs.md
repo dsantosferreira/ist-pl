@@ -392,8 +392,3 @@ let client = fn r: IIncView  =>
     client (c0);
     c0.#get()
 ;;
-
-let a = #rect(1);
-match a {
-    #rect(x) -> {#b = x} | #circle(x) -> {#b = x, #c = 1}
-};;
