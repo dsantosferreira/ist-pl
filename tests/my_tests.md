@@ -1,119 +1,3 @@
-// Simple sequence operator test
-// 2
-let a = 1;
-let b = 2;
-a;
-b;
-
-// Simple if tests
-// 0
-let a = 1;
-let b = 2;
-if a <= b {0} else {1};;
-
-// 1
-let a = 1;
-let b = 2;
-if a > b {0} else {1};;
-
-// 2
-let f:int->int->bool = fn x:int, y:int => {if (x == 1) {f(2)(2)} else {false}; x + y};
-f(1)(1);;
-
-// Simple while tests
-// false
-let a = false;
-while a {0};
-a;;
-
-// 5\n4\n3\n2\n1\n0
-let a = box(5);
-while !a ~= 0 {println(!a); a := !a - 1};
-!a;;
-
-// Simple print/println functions
-// true1
-let a = true;
-let b = 1;
-print(a);
-b;;
-
-// true\n1
-let a = true;
-let b = 1;
-println(a);
-b;;
-
-// lambda@(...)\nlambda@(...)
-let f = fn x:bool => {x};
-println(f);;
-
-// Simple assignment/box/dereferences tests
-// 6
-let fact = fn n:int => { let c = box (n);
-    let f = box (1);
-    while (!c > 0) {
-        f := !f * !c;
-    c := !c - 1
-    };
-    !f
-};
-fact (3);;
-
-// 3
-let c = box(0);
-let tick = fn inc:int => { let v = !c; c := !c + inc; v };
-tick(1);
-tick(1);
-tick(1);
-tick(1);;
-
-// 5
-let a = box(0);
-let f = fn b:int => {let c = b; a := c};
-f(5);
-!a;;
-
-// TODO: Check if this should work!
-// This test shows that updated storage survives inner scope of function, even if the variable "c" does not exist anymore
-// 5
-let a = box(0);
-let f = fn b:int => {let c = box(5); a := c};
-f(5);
-!!a;;
-
-// 10
-let a = box(0);
-let f = fn b:int => {let c = box(b); a := c};
-f(5); !a := 10;
-!!a;;
-
-// 6
-let v = box(5);
-let a = box(v);
-v := 6;
-!!a;;
-
-// Simple currying test
-// 6
-let f = fn a:int, b:int, c:int => {a + b + c}; let g = f(1); let h = g(2); h(3);;
-
-// Simple collatz sequence
-// 1
-let x = box(3);
-while !x ~= 1 {
-    if !x / 2 * 2 == !x { x := !x/2 } else { x := 3 * !x + 1 }
-};
-!x;;
-
-// 1
-let collatz:int->int = fn x:int => {
-    if x == 1 {x} else {
-        if x / 2 * 2 == x {collatz (x/2)} else {collatz(3*x + 1)}
-    }
-};
-collatz(3);;
-
 // Tests with static lists
 // 1::2::3::4::nil
 let concat:list<int> -> list<int> -> list<int> = fn l:list<int>, r:list<int> => {
@@ -140,14 +24,14 @@ let reverse:list<int> -> list<int> = fn l:list<int> => {
 reverse (1::2::3::nil);;
 
 // 15
-let reduce = fn l, op => {
+let reduce:list<int> -> (int -> int -> int) -> int = fn l:list<int>, op:int->int->int => {
     match l {
         nil -> 0
         |
         h::t -> op (h) (reduce (t) (op))
     }
 };
-let mkl = fn n =>
+let mkl:int -> list<int> = fn n:int =>
 {
     if (n==0) {
         nil
@@ -155,17 +39,17 @@ let mkl = fn n =>
         n::( mkl(n-1))
     }
 };
-reduce ( mkl (5) ) ((fn x, y => {x + y})) ;;
+reduce ( mkl (5) ) ((fn x:int, y:int => {x + y})) ;;
 
 // 5
-let reduce = fn l, op => {
+let reduce:list<int> -> (int -> int -> int) -> int = fn l:list<int>, op:int -> int -> int => {
     match l {
         nil -> 0
         |
         h::t -> op (h) (reduce (t) (op))
     }
 };
-let mkl = fn n =>
+let mkl:int -> list<int> = fn n:int =>
 {
     if (n==0) {
         nil
@@ -173,50 +57,22 @@ let mkl = fn n =>
         n::( mkl(n-1))
     }
 };
-reduce ( mkl (5) ) ((fn x, y => {if x >= y {x} else {y}}));;
+reduce ( mkl (5) ) ((fn x:int, y:int => {if x >= y {x} else {y}}));;
 
 // 19
-let sum = fn l => {
+let sum:list<int> -> int = fn l:list<int> => {
     match l {
         nil -> 0 |
         x::t -> x + sum (t)
     }
 };
-let sublistsum = fn l => {
+let sublistsum:list<list<int>> -> int = fn l:list<list<int>> => {
     match l {
         nil -> 0 |
         x::t -> sum(x) + sublistsum(t)
     }
 };
 sublistsum((1::2::3::nil)::(1::2::3::nil)::(1::2::4::nil)::nil);;
-
-// Tests with lazy lists
-// Prints first 100 numbers tripled
-let intsfm = fn n => {
-    n:? (intsfm (n+1))
-};
-let map = fn l, g => {
-    match l {
-        nil -> nil
-    |
-        h::t -> (g(h)):?(map(t)(g))
-    }
-};
-let pfst = fn l,n => {
-    if (n==0) {
-        println(n)
-    } else {
-        match l {
-            nil -> 0
-            |
-            h::t -> println(h); pfst (t) (n-1)
-        }
-    }
-};
-let l = intsfm (0);
-let triple = fn n => { n*3 };
-let m = map (l) (triple);
-pfst (m) (100);;
 
 // Dynamic typing tests
 

@@ -33,9 +33,9 @@ public class ASTList implements ASTNode {
         if (tailType instanceof ASTTList tailList) {
             ASTType tailElT = tailList.getElt();
             if (subtype(headType, tailElT, new ArrayList<>(), idTypes))
-                return tailElT;
+                return new ASTTList(tailElT);
             else if (subtype(tailElT, headType, new ArrayList<>(), idTypes))
-                return headType;
+                return new ASTTList(headType);
             else
                 throw new TypeCheckError("Type of head of list must match the type of its tail. Got head with type " + headType.toStr() + " and tail of type " + tailType.toStr());
         } else

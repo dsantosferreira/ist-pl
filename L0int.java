@@ -1,6 +1,7 @@
 import AST.ASTNode;
 import ASTTypes.ASTType;
 import environment.Environment;
+import errors.EnvironmentError;
 import errors.InterpreterError;
 import errors.TypeCheckError;
 import values.IValue;
@@ -37,8 +38,8 @@ public class L0int {
 			} catch (ParseException e) {
 				System.out.println("Syntax Error in file.");
 				System.exit(1);
-			} catch (InterpreterError | TypeCheckError e) {
-				System.out.println("Runtime Error: " + e.getMessage());
+			} catch (InterpreterError | TypeCheckError | EnvironmentError e) {
+				System.out.println(e);
 				System.exit(1);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -55,7 +56,7 @@ public class L0int {
 						exp.typecheck(new Environment<ASTType>(), new Environment<>());
 						IValue v = exp.eval(new Environment<IValue>());
 						System.out.println(v.toStr());
-					} catch (InterpreterError | TypeCheckError e) {
+					} catch (InterpreterError | TypeCheckError | EnvironmentError e) {
 						System.out.println(e);;
 					}
 				} catch (ParseException e) {
