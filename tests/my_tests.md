@@ -218,4 +218,43 @@ a
 
 
 // Union Match branches must have common super type
+// Fails
+let f = fn x:union {#rect:int, #circle:int} => {
+    match x {
+        #rect(x) -> 1 |
+        #circle(y) -> true
+    }
+};
+f(#rect(1));;
+
+// Succeeds since argument applied to match does not #circle (dead code)
+let f = fn x:union {#rect:int} => {
+match x {
+#rect(x) -> 1 |
+#circle(y) -> true
+}
+};
+f(#rect(1));;
+
+// Function subtyping
+// Succeeds
+type F1 = struct{#x:int, #y:int} -> struct {#z:int};
+(
+let f:F1 = fn a:struct{#x:int} => {{#y = 1, #z = 2}};
+1
+);;
+
+// Fails
+type F1 = struct{#x:int, #y:int} -> struct {#z:int};
+(
+let f:F1 = fn a:struct{#x:int, #y:int, #z:int} => {{#y = 1, #z = 2}};
+1
+);;
+
+// Fails
+type F1 = struct{#x:int, #y:int} -> struct {#z:int};
+(
+let f:F1 = fn a:struct{#x:int} => {{#y = 1}};
+1
+);;
 
