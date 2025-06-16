@@ -1,5 +1,6 @@
 package AST;
 
+import ASTTypes.ASTTId;
 import ASTTypes.ASTTStruct;
 import ASTTypes.ASTType;
 import environment.Environment;
@@ -29,11 +30,17 @@ public class ASTDot implements ASTNode {
 
     @Override
     public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
-        ASTType t = struct.typecheck(valTypes, idTypes);
+        ASTType t = unfold(struct.typecheck(valTypes, idTypes), idTypes);
 
         if (t instanceof ASTTStruct tStruct) {
             return tStruct.getType(id);
         } else
             throw new TypeCheckError("Expected a struct to apply specifier " + id);
+    }
+
+    private ASTType unfold(ASTType t, Environment<ASTType> e) {
+        while (t instanceof ASTTId tId)
+            t = e.find(tId.getId());
+        return t;
     }
 }

@@ -1,9 +1,5 @@
 package ASTTypes;
 
-import environment.Environment;
-import errors.EnvironmentError;
-import errors.IncompatibleTypes;
-
 public class ASTTId implements ASTType	{
     String id;
     
@@ -12,21 +8,6 @@ public class ASTTId implements ASTType	{
     }
     public String toStr() {
         return id;
-    }
-
-    @Override
-    public boolean isSubtypeOf(ASTType other) {
-        return false;
-    }
-
-    @Override
-    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
-        return null;
-    }
-
-    @Override
-    public ASTType reduce(Environment<ASTType> e) throws EnvironmentError {
-        return e.find(id).reduce(e);
     }
 
     public String getId() {
@@ -39,6 +20,11 @@ public class ASTTId implements ASTType	{
             return false;
         }
 
-        return obj.getClass() == this.getClass();
+        if (obj.getClass() != this.getClass())
+            return false;
+
+        ASTTId other = (ASTTId) obj;
+
+        return this.id.equals(other.getId());
     }
 }

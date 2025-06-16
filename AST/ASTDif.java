@@ -1,6 +1,7 @@
 package AST;
 
 import ASTTypes.ASTTBool;
+import ASTTypes.ASTTId;
 import ASTTypes.ASTTInt;
 import ASTTypes.ASTType;
 import environment.Environment;
@@ -38,19 +39,25 @@ public class ASTDif implements ASTNode {
 
     @Override
     public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
-        ASTType t1 = exp1.typecheck(valTypes, idTypes);
+        ASTType t1 = unfold(exp1.typecheck(valTypes, idTypes), idTypes);
 
         if (t1 instanceof ASTTInt) {
-            ASTType t2 = exp2.typecheck(valTypes, idTypes);
+            ASTType t2 = unfold(exp2.typecheck(valTypes, idTypes), idTypes);
             if (t2 instanceof ASTTInt)
                 return new ASTTBool();
             throw new TypeCheckError("Illegal type of second operand in inequality between two integers: " + t2.toStr());
         } else if (t1 instanceof ASTTBool) {
-            ASTType t2 = exp2.typecheck(valTypes, idTypes);
+            ASTType t2 = unfold(exp2.typecheck(valTypes, idTypes), idTypes);
             if (t2 instanceof ASTTBool)
                 return t1;
             throw new TypeCheckError("Illegal type of second operand in inequality between two boolean values: " + t2.toStr());
         }
         throw new TypeCheckError("Illegal type of first operand in inequality operation: " + t1.toStr());
+    }
+
+    private ASTType unfold(ASTType t, Environment<ASTType> e) {
+        while (t instanceof ASTTId tId)
+            t = e.find(tId.getId());
+        return t;
     }
 }

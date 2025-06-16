@@ -3,26 +3,13 @@ package ASTTypes;
 import environment.Environment;
 import errors.IncompatibleTypes;
 
+import java.util.Objects;
+
 public class ASTTUnit implements ASTType {
     public ASTTUnit() {}
 
     public String toStr() {
         return "()";
-    }
-
-    @Override
-    public boolean isSubtypeOf(ASTType other) {
-        return other instanceof ASTTUnit;
-    }
-
-    @Override
-    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
-        return this;
-    }
-
-    @Override
-    public ASTType reduce(Environment<ASTType> e) {
-        return this;
     }
 
     @Override

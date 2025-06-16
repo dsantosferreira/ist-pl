@@ -1,5 +1,6 @@
 package AST;
 
+import ASTTypes.ASTTId;
 import ASTTypes.ASTTRef;
 import ASTTypes.ASTType;
 import environment.Environment;
@@ -28,11 +29,17 @@ public class ASTDeref implements ASTNode {
 
     @Override
     public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
-        ASTType t = var.typecheck(valTypes, idTypes);
+        ASTType t = unfold(var.typecheck(valTypes, idTypes), idTypes);
 
         if (t instanceof ASTTRef tRef) {
             return tRef.getType();
         } else
             throw new TypeCheckError("Illegal type for dereference operation: " + t.toStr());
+    }
+
+    private ASTType unfold(ASTType t, Environment<ASTType> e) {
+        while (t instanceof ASTTId tId)
+            t = e.find(tId.getId());
+        return t;
     }
 }

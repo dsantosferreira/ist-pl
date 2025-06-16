@@ -12,23 +12,6 @@ public class ASTTBool implements ASTType {
     }
 
     @Override
-    public boolean isSubtypeOf(ASTType other) {
-        return other instanceof ASTTBool;
-    }
-
-    @Override
-    public ASTType getMostGeneral(ASTType other) {
-        if (!this.isSubtypeOf(other))
-            throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
-        return this;
-    }
-
-    @Override
-    public ASTType reduce(Environment<ASTType> e) {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;

@@ -1,5 +1,6 @@
 package AST;
 
+import ASTTypes.ASTTId;
 import ASTTypes.ASTTList;
 import ASTTypes.ASTType;
 import environment.Environment;
@@ -43,10 +44,9 @@ public class ASTMatch implements ASTNode {
         }
     }
 
-    // TODO: need to handle case where list is totally empty. Empty list should have the most generic type possible!
     @Override
     public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
-        ASTType listType = list.typecheck(valTypes, idTypes);
+        ASTType listType = unfold(list.typecheck(valTypes, idTypes), idTypes);
 
         if (listType instanceof ASTTList listT) {
             ASTType nilType = nilExpr.typecheck(valTypes, idTypes);
@@ -63,5 +63,11 @@ public class ASTMatch implements ASTNode {
                 throw new TypeCheckError("Types of both cases of match construct must be the same. Got: " + nilType.toStr() + " and " + listExprType.toStr());
         } else
             throw new TypeCheckError("Invalid type for match construct. Expected list, got: " + listType.toStr());
+    }
+
+    private ASTType unfold(ASTType t, Environment<ASTType> e) {
+        while (t instanceof ASTTId tId)
+            t = e.find(tId.getId());
+        return t;
     }
 }

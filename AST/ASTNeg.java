@@ -1,6 +1,7 @@
 package AST;
 
 import ASTTypes.ASTTBool;
+import ASTTypes.ASTTId;
 import ASTTypes.ASTTInt;
 import ASTTypes.ASTType;
 import environment.Environment;
@@ -28,12 +29,18 @@ public class ASTNeg implements ASTNode {
 
 	@Override
 	public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
-		ASTType t = exp.typecheck(valTypes, idTypes);
+		ASTType t = unfold(exp.typecheck(valTypes, idTypes), idTypes);
 
 		if (t instanceof ASTTInt) {
 			return t;
 		} else
 			throw new TypeCheckError("Illegal type for negation operation " + t.toStr());
+	}
+
+	private ASTType unfold(ASTType t, Environment<ASTType> e) {
+		while (t instanceof ASTTId tId)
+			t = e.find(tId.getId());
+		return t;
 	}
 }
 

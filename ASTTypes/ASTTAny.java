@@ -10,17 +10,11 @@ public class ASTTAny implements ASTType {
     }
 
     @Override
-    public boolean isSubtypeOf(ASTType other) {
-        return true;
-    }
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
 
-    @Override
-    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
-        return other;
-    }
-
-    @Override
-    public ASTType reduce(Environment<ASTType> e) {
-        return this;
+        return obj.getClass() == this.getClass();
     }
 }

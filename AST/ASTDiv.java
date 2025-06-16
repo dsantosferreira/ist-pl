@@ -1,5 +1,6 @@
 package AST;
 
+import ASTTypes.ASTTId;
 import ASTTypes.ASTTInt;
 import ASTTypes.ASTType;
 import environment.Environment;
@@ -32,9 +33,9 @@ public class ASTDiv implements ASTNode {
 
 	@Override
 	public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
-		ASTType t1 = lhs.typecheck(valTypes, idTypes);
+		ASTType t1 = unfold(lhs.typecheck(valTypes, idTypes), idTypes);
 		if (t1 instanceof ASTTInt) {
-			ASTType t2 = rhs.typecheck(valTypes, idTypes);
+			ASTType t2 = unfold(rhs.typecheck(valTypes, idTypes), idTypes);
 			if (t2 instanceof ASTTInt) {
 				return t1;
 			}
@@ -42,5 +43,11 @@ public class ASTDiv implements ASTNode {
 
 		}
 		throw new TypeCheckError("Illegal type of first operand in division operation operation: " + t1.toStr());
+	}
+
+	private ASTType unfold(ASTType t, Environment<ASTType> e) {
+		while (t instanceof ASTTId tId)
+			t = e.find(tId.getId());
+		return t;
 	}
 }

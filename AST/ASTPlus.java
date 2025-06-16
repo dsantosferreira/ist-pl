@@ -1,9 +1,6 @@
 package AST;
 
-import ASTTypes.ASTTBool;
-import ASTTypes.ASTTInt;
-import ASTTypes.ASTTString;
-import ASTTypes.ASTType;
+import ASTTypes.*;
 import environment.Environment;
 import errors.InterpreterError;
 import errors.TypeCheckError;
@@ -39,8 +36,8 @@ public class ASTPlus implements ASTNode {
 
     @Override
     public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
-        ASTType t1 = lhs.typecheck(valTypes, idTypes);
-        ASTType t2 = rhs.typecheck(valTypes, idTypes);
+        ASTType t1 = unfold(lhs.typecheck(valTypes, idTypes), idTypes);
+        ASTType t2 = unfold(rhs.typecheck(valTypes, idTypes), idTypes);
 
         if (t1 instanceof ASTTString || t2 instanceof  ASTTString)
             return new ASTTString();
@@ -52,5 +49,11 @@ public class ASTPlus implements ASTNode {
                 throw new TypeCheckError("Illegal type for second operand in addition operation " + t2.toStr());
         } else
             throw new TypeCheckError("Illegal type for first operand in addition operation " + t1.toStr());
+    }
+
+    private ASTType unfold(ASTType t, Environment<ASTType> e) {
+        while (t instanceof ASTTId tId)
+            t = e.find(tId.getId());
+        return t;
     }
 }

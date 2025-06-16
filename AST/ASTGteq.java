@@ -1,6 +1,7 @@
 package AST;
 
 import ASTTypes.ASTTBool;
+import ASTTypes.ASTTId;
 import ASTTypes.ASTTInt;
 import ASTTypes.ASTType;
 import environment.Environment;
@@ -33,10 +34,10 @@ public class ASTGteq implements ASTNode {
 
     @Override
     public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
-        ASTType t1 = exp1.typecheck(valTypes, idTypes);
+        ASTType t1 = unfold(exp1.typecheck(valTypes, idTypes), idTypes);
 
         if (t1 instanceof ASTTInt) {
-            ASTType t2 = exp2.typecheck(valTypes, idTypes);
+            ASTType t2 = unfold(exp2.typecheck(valTypes, idTypes), idTypes);
 
             if (t2 instanceof ASTTInt)
                 return new ASTTBool();
@@ -44,5 +45,11 @@ public class ASTGteq implements ASTNode {
                 throw new TypeCheckError("Illegal type for second operand in >= operation " + t2.toStr());
         } else
             throw new TypeCheckError("Illegal type for first operand in >= operation " + t1.toStr());
+    }
+
+    private ASTType unfold(ASTType t, Environment<ASTType> e) {
+        while (t instanceof ASTTId tId)
+            t = e.find(tId.getId());
+        return t;
     }
 }

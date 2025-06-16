@@ -18,24 +18,6 @@ public class ASTTRef implements ASTType {
     }
 
     @Override
-    public boolean isSubtypeOf(ASTType other) {
-        if (!(other instanceof ASTTRef otherT))
-            return false;
-
-        return otherT.getType().isSubtypeOf(this.type) && this.type.isSubtypeOf(otherT.getType());
-    }
-
-    @Override
-    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
-        return null;
-    }
-
-    @Override
-    public ASTType reduce(Environment<ASTType> e) {
-        return new ASTTRef(type.reduce(e));
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;

@@ -1,6 +1,7 @@
 package AST;
 
 import ASTTypes.ASTTBool;
+import ASTTypes.ASTTId;
 import ASTTypes.ASTType;
 import environment.Environment;
 import errors.InterpreterError;
@@ -34,11 +35,17 @@ public class ASTWhile implements ASTNode {
 
     @Override
     public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
-        ASTType condType = test.typecheck(valTypes, idTypes);
+        ASTType condType = unfold(test.typecheck(valTypes, idTypes), idTypes);
 
         if (condType instanceof ASTTBool) {
             return body.typecheck(valTypes, idTypes);
         } else
             throw new TypeCheckError("Invalid type for while statement condition: " + condType.toStr());
+    }
+
+    private ASTType unfold(ASTType t, Environment<ASTType> e) {
+        while (t instanceof ASTTId tId)
+            t = e.find(tId.getId());
+        return t;
     }
 }

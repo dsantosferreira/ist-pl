@@ -1,6 +1,7 @@
 package AST;
 
 import ASTTypes.ASTTArrow;
+import ASTTypes.ASTTId;
 import ASTTypes.ASTTUnit;
 import ASTTypes.ASTType;
 import environment.Environment;
@@ -30,7 +31,7 @@ public class ASTFn implements ASTNode {
         Environment<ASTType> newValTypesEnv = valTypes.beginScope();
         Environment<ASTType> newIdTypesEnv = idTypes.beginScope();
 
-        ASTType realType = varType.reduce(idTypes);
+        ASTType realType = unfold(varType, idTypes);
 
         if (var.equals("_")) {
             if (!(realType instanceof ASTTUnit))
@@ -38,5 +39,11 @@ public class ASTFn implements ASTNode {
         } else
             newValTypesEnv.assoc(var, realType);
         return new ASTTArrow(realType, body.typecheck(newValTypesEnv, newIdTypesEnv));
+    }
+
+    private ASTType unfold(ASTType t, Environment<ASTType> e) {
+        while (t instanceof ASTTId tId)
+            t = e.find(tId.getId());
+        return t;
     }
 }

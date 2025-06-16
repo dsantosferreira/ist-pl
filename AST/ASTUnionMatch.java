@@ -1,7 +1,6 @@
 package AST;
 
-import ASTTypes.ASTTUnion;
-import ASTTypes.ASTType;
+import ASTTypes.*;
 import environment.Environment;
 import errors.InterpreterError;
 import errors.TypeCheckError;
@@ -52,7 +51,7 @@ public class ASTUnionMatch implements ASTNode {
 
     @Override
     public ASTType typecheck(Environment<ASTType> valTypes, Environment<ASTType> idTypes) throws TypeCheckError {
-        ASTType paramT = param.typecheck(valTypes, idTypes);
+        ASTType paramT = unfold(param.typecheck(valTypes, idTypes), idTypes);
 
         if (paramT instanceof ASTTUnion paramUnion) {
             Set<String> paramFields = paramUnion.getFields();
@@ -78,17 +77,98 @@ public class ASTUnionMatch implements ASTNode {
                 newValTypesEnv.assoc(entry.getId(), paramUnion.getType(field));
                 ASTType currCaseType = entry.getExpr().typecheck(newValTypesEnv, idTypes);
 
-                if (lastCaseType != null && (!currCaseType.isSubtypeOf(lastCaseType) || !currCaseType.isSubtypeOf(lastCaseType)))
+                if (lastCaseType != null && !(subtype(currCaseType, lastCaseType, new ArrayList<>(), idTypes) || subtype(lastCaseType, currCaseType, new ArrayList<>(), idTypes)))
                     throw new TypeCheckError("All cases from match construct must return the same type or a super type of all the types. Got " + lastCaseType.toStr() + " and " + currCaseType.toStr());
 
-                if (lastCaseType == null)
+                if (lastCaseType == null || subtype(lastCaseType, currCaseType, new ArrayList<>(), idTypes))
                     lastCaseType = currCaseType;
-                else
-                    lastCaseType = lastCaseType.getMostGeneral(currCaseType);
             }
 
             return lastCaseType;
         } else
             throw new TypeCheckError("Invalid type for parameter in match operation. Expected a union, got: " + paramT.toStr());
+    }
+
+    private ASTType unfold(ASTType t, Environment<ASTType> e) {
+        while (t instanceof ASTTId tId)
+            t = e.find(tId.getId());
+        return t;
+    }
+
+    private boolean subtype(ASTType t1, ASTType t2, ArrayList<TypePair> pairsSeen, Environment<ASTType> e) {
+        if (pairsSeen.contains(new TypePair(t1, t2)) || t1 instanceof ASTTAny)
+            return true;
+
+        pairsSeen.add(new TypePair(t1, t2));
+
+        if (t1.equals(t2))
+            return true;
+
+        // t1 unfolding
+        if (t1 instanceof ASTTId t1Id)
+            return subtype(e.find(t1Id.getId()), t2, pairsSeen, e);
+
+        // t2 unfolding
+        if (t2 instanceof ASTTId t2Id)
+            return subtype(t1, e.find(t2Id.getId()), pairsSeen, e);
+
+        // Arrow subtyping
+        if (t1 instanceof ASTTArrow t1Arrow) {
+            if (t2 instanceof ASTTArrow t2Arrow) {
+                return subtype(t1Arrow.getCodom(), t2Arrow.getCodom(), pairsSeen, e) &&
+                        subtype(t2Arrow.getDom(), t1Arrow.getDom(), pairsSeen, e);
+            }
+        }
+
+        // Ref subtyping
+        if (t1 instanceof ASTTRef t1Ref) {
+            if (t2 instanceof ASTTRef t2Ref) {
+                return subtype(t1Ref.getType(), t2Ref.getType(), pairsSeen, e) &&
+                        subtype(t2Ref.getType(), t1Ref.getType(), pairsSeen, e);
+            }
+        }
+
+        // List subtyping
+        if (t1 instanceof ASTTList t1List) {
+            if (t2 instanceof ASTTList t2List) {
+                return subtype(t1List.getElt(), t2List.getElt(), pairsSeen, e);
+            }
+        }
+
+        // Union subtyping
+        if (t1 instanceof ASTTUnion t1Union) {
+            if (t2 instanceof ASTTUnion t2Union) {
+                HashMap<String, ASTType> t1Tbl = t1Union.getTypeBindList().getMap();
+                HashMap<String, ASTType> t2Tbl = t2Union.getTypeBindList().getMap();
+                for (HashMap.Entry<String, ASTType> thisEntry: t1Tbl.entrySet()) {
+                    String thisFieldName = thisEntry.getKey();
+                    if (!t2Tbl.containsKey(thisFieldName))
+                        return false;
+
+                    if (!subtype(thisEntry.getValue(), t2Tbl.get(thisFieldName), pairsSeen, e))
+                        return false;
+                }
+                return true;
+            }
+        }
+
+        // Struct subtyping
+        if (t1 instanceof ASTTStruct t1Struct) {
+            if (t2 instanceof ASTTStruct t2Struct) {
+                HashMap<String, ASTType> t1Tbl = t1Struct.getTypeBindList().getMap();
+                HashMap<String, ASTType> t2Tbl = t2Struct.getTypeBindList().getMap();
+                for (HashMap.Entry<String, ASTType> otherEntry: t2Tbl.entrySet()) {
+                    String otherFieldName = otherEntry.getKey();
+                    if (!t1Tbl.containsKey(otherFieldName))
+                        return false;
+
+                    if (!subtype(t1Tbl.get(otherFieldName), otherEntry.getValue(), pairsSeen, e))
+                        return false;
+                }
+                return true;
+            }
+        }
+
+        return false;
     }
 }

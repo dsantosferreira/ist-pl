@@ -16,28 +16,6 @@ public class ASTTArrow implements ASTType {
         return dom.toStr()+"->"+codom.toStr();
     }
 
-    @Override
-    public boolean isSubtypeOf(ASTType other) {
-        if (!(other instanceof ASTTArrow otherT))
-            return false;
-
-        return otherT.getDom().isSubtypeOf(this.dom) && this.codom.isSubtypeOf(otherT.getCodom());
-    }
-
-    @Override
-    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
-        if (this.isSubtypeOf(other))
-            return other;
-        else if (other.isSubtypeOf(this))
-            return this;
-        throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
-    }
-
-    @Override
-    public ASTType reduce(Environment<ASTType> e) {
-        return new ASTTArrow(dom.reduce(e), codom.reduce(e));
-    }
-
     public ASTType getDom() {
         return dom;
     }

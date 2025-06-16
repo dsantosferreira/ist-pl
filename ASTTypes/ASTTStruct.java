@@ -38,46 +38,6 @@ public class ASTTStruct implements ASTType {
     }
 
     @Override
-    public boolean isSubtypeOf(ASTType other) {
-        if (!(other instanceof ASTTStruct otherT))
-            return false;
-
-        HashMap<String, ASTType> thistbl = this.getTypeBindList().getMap();
-        HashMap<String, ASTType> othertbl = otherT.getTypeBindList().getMap();
-        for (HashMap.Entry<String, ASTType> otherEntry: othertbl.entrySet()) {
-            String otherFieldName = otherEntry.getKey();
-            if (!thistbl.containsKey(otherFieldName))
-                return false;
-
-            if (!thistbl.get(otherFieldName).isSubtypeOf(otherEntry.getValue()))
-                return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public ASTType getMostGeneral(ASTType other) throws IncompatibleTypes {
-        if (this.isSubtypeOf(other))
-            return other;
-        else if (other.isSubtypeOf(this))
-            return this;
-        throw new IncompatibleTypes("Cannot take most general type of " + this.toStr() + " and " + other.toStr());
-    }
-
-    @Override
-    public ASTType reduce(Environment<ASTType> e) {
-        HashMap<String, ASTType> newtbl = new HashMap<>();
-        HashMap<String, ASTType> typebl = this.ll.getMap();
-
-        for (Map.Entry<String, ASTType> entry: typebl.entrySet()) {
-            newtbl.put(entry.getKey(), entry.getValue().reduce(e));
-        }
-
-        return new ASTTStruct(new TypeBindList(newtbl));
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
