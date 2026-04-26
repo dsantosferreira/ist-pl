@@ -10,7 +10,7 @@ This repository holds my solution for the Programming Languages project at Insti
 - Static and lazy lists;
 - Recursive types
 
-My solution also includes a static type checker, which support recursive typing, to allow a program to be analysed for type errors before beginning its execution, which could lead to runtime errors. The file [SasyLFSafe0.slf][./SasyLFSafe0.slf] contains a complementary SasyLF type preservation proof that considers a "pairs" type. Further details about the implementation can be found in the [report](./report).
+My solution also includes a static type checker, which support recursive typing, to allow a program to be analysed for type errors before beginning its execution, which could lead to runtime errors. The file [SasyLFSafe0.slf][./SasyLFSafe0.slf] contains a complementary SasyLF type preservation proof that considers a "pairs" type. Further details about the implementation can be found in the [report](./report.pdf).
 
 ## How to run
 
